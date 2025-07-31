@@ -3,11 +3,16 @@
 import { useState, useEffect } from 'react';
 import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 
-import image_1 from '../../../public/slideShow_1.png'
-import image_2 from '../../../public/slideShow_2.png'
-import image_3 from '../../../public/slideshow_image_1.png'
-import image_4 from '../../../public/slideshow_image_2.png'
-import image_5 from '../../../public/slideshow_image_3.png'
+// import image_1 from '../../../public/slideShow_1.png'
+// import image_2 from '../../../public/slideShow_2.png'
+import image_1 from '../../../public/slideshow_image_1.png'
+import image_2 from '../../../public/slideshow_image_2.png'
+import image_3 from '../../../public/slideshow_image_3.png'
+import image_4 from '../../../public/slideShow_image_4.png'
+import image_5 from '../../../public/slideShow_image_5.png'
+import image_6 from '../../../public/slideShow_image_6.png'
+
+
 
 import Image from 'next/image';
 import { Button } from '../ui/button';
@@ -21,7 +26,8 @@ const HeroSection = () => {
     { src: image_2, alt: "T-Shirt Printing Process" },
     { src: image_3, alt: "Quality T-Shirt Materials" },
     { src: image_4, alt: "Custom Design Examples" },
-    { src: image_5, alt: "Professional Printing Equipment" }
+    { src: image_5, alt: "Professional Printing Equipment" },
+    { src: image_6, alt: "Professional Printing Equipment 2" }
   ];
 
   useEffect(() => {
