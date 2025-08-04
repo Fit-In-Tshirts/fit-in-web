@@ -1,3 +1,5 @@
+'use client'
+
 import { SearchBar } from "../SearchBar/SearchBar";
 import logo from "../../../public/logo.png";
 import Link from "next/link";
@@ -6,7 +8,7 @@ import DropDown from "./DropDown";
 import { Button } from "../ui/button";
 import OrderTrackingIcon from '../../icons/tracking.png'
 import CartIcon from '../../icons/shopping-cart.png'
-import UserIcon from '../../icons/user.svg'
+import UserActions from "./UserActions";
 
 export default function Header() {
   return (
@@ -27,7 +29,7 @@ export default function Header() {
       <div className="flex felx-row items-center justify-around w-auto px-5 grow-1">
         <Button variant='secondary' className="border border-neutral-300 hover:border-neutral-400"> Cart <Image src={CartIcon} alt={"Shopping cart"} width={25} /> </Button>
         <Button variant="link"> About Us </Button>
-        <Button variant="secondary" size='lg' className="border border-neutral-400 hover:bg-neutral-300 hover:border-neutral-300 rounded-full p-2"> <Image src={UserIcon} alt={"User"} /> </Button>
+        <UserActions />
       </div>
     </div>
   )
