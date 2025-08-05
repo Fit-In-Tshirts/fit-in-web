@@ -270,7 +270,7 @@ export default function SignupPage() {
           </div>
         </div>
 
-        <Button formAction={signup} variant={'default'} disabled={SubmitVisibility()} className='w-sm mb-5'>Sign in</Button>
+        <Button formAction={signup} variant={'default'} disabled={SubmitVisibility()} className='w-sm mb-5'>Sign up</Button>
         <p className='text-center text-sm text-gray-600'>
           Already have an account? 
           <Link 
