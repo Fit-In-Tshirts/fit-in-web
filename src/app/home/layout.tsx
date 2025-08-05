@@ -24,21 +24,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      </head>
-      <body className="antialiased w-full min-h-screen flex flex-col bg-neutral-100" >
-        <header>
-          <Header />
-        </header>
-        <main className="mx-15">
-          {children}
-        </main>
-        <footer>
-          <Footer />
-        </footer>
-      </body>
-    </html>
+    <>
+      <header>
+        <Header />
+      </header>
+      <main className="mx-15">
+        {children}
+      </main>
+      <footer>
+        <Footer />
+      </footer>
+    </> 
   );
 }

@@ -28,9 +28,7 @@ export default function LoginLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </head>
       <body className="antialiased w-full min-h-screen flex flex-col bg-neutral-100" >
-        <main>
-          {children}
-        </main>
+        {children}
       </body>
     </html>
   );
