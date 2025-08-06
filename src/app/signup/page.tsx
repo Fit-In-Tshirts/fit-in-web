@@ -14,7 +14,7 @@ import crossIcon from '../../icons/wrong.png'
 import Link from 'next/link'
 import password_lock from '../../icons/lock-close.svg'
 import password_unlock from '../../icons/lock-open.svg'
-import { Passero_One } from 'next/font/google'
+import { Address } from '../../types/common'
 
 interface FormData {
   firstName: string;
@@ -22,7 +22,9 @@ interface FormData {
   email: string;
   password: string;
   confirmPassword: string;
-  deliveryAddress: string;
+
+  address: Address;
+
   phoneNumber_mobile: string;
   phoneNumber_home: string;
 }
@@ -34,7 +36,14 @@ export default function SignupPage() {
     email: '',
     password: '',
     confirmPassword: '',
-    deliveryAddress: '',
+    address: {
+      houseNumber: '',
+      addressLine_1: '',
+      addressLine_2: '',
+      city: '',
+      province: '',
+      zipcode: 0
+    },
     phoneNumber_mobile: '',
     phoneNumber_home: '',
   });
@@ -48,20 +57,43 @@ export default function SignupPage() {
     }));
   };
 
+  const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+      setFormData(prev => ({
+        ...prev,
+        address: {
+          ...prev.address,
+          [name]: value
+        }
+      }
+    ));
+  };
+
   const isValidEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.com$/;
     return emailRegex.test(email);
   };
+
+  function isValidPhoneNumber(phone: string): boolean {
+    const regex = /^\d{9}$/;
+    return regex.test(phone);
+  }
 
   const SubmitVisibility = () => {
     if(
       formData.firstName.trim() !== '' &&
       formData.lastName.trim() !== '' &&
       formData.email.trim() !== '' &&
+      isValidEmail(formData.email.trim()) &&
       formData.password.trim() !== '' &&
       formData.password.trim() == formData.confirmPassword.trim() &&
-      formData.deliveryAddress.trim() !== '' &&
-      formData.phoneNumber_mobile.trim() !== ''
+      formData.address.houseNumber.trim() !== '' &&
+      formData.address.addressLine_1.trim() !== '' &&
+      formData.address.addressLine_2.trim() !== '' &&
+      formData.address.city.trim() !== '' &&
+      formData.address.province.trim() !== '' &&
+      formData.phoneNumber_mobile.trim() !== '' &&
+      isValidPhoneNumber(formData.phoneNumber_mobile.trim())
     ) {
       return false;
     } else {
@@ -223,49 +255,164 @@ export default function SignupPage() {
           </div>
         </div>
 
-        <div className='flex flex-col gap-2 items-start justify-center mb-5'>
-          <Label htmlFor="deliveryAddress">Delivery Address *</Label>
-          <Input 
-            type="text" 
-            id="deliveryAddress" 
-            name='deliveryAddress' 
-            placeholder="No. 235, York Street, Colombo 5" 
-            required
-            value={formData.deliveryAddress}
-            onChange={handleChange}
-            className='w-md'
-          />
-        </div>
-
-        <div className='flex flex-row w-full justify-between gap-1'>
-          <div className='flex flex-col gap-2 items-start justify-center mb-5 w-auto grow-1'>
-            <Label htmlFor="phoneNumber_mobile">Phone Number(mobile) *</Label>
-            <div className='flex flex-row justify-center items-center gap-0'>
-              <p className='border rounded-md p-1'>+94</p>
+        <div className='flex flex-col gap-2 items-start justify-center mb-5 w-full'>
+          <Label>Delivery Address *</Label>
+          <div id='deliveryAddress' className='flex flex-col w-full gap-1'>
+            <div className='flex flex-row justify-center items-center gap-1 w-full'>
+              <p className='border rounded-md p-1 w-17 bg-neutral-50'>No.</p>
               <Input 
                 type="text" 
-                id="phoneNumber_mobile" 
-                name='phoneNumber_mobile' 
-                placeholder="77 895 668" 
+                id="houseNumber" 
+                name='houseNumber' 
+                placeholder="235" 
                 required
-                value={ formData.phoneNumber_mobile}
-                onChange={handleChange}
+                value={formData.address.houseNumber}
+                onChange={handleAddressChange}
+                autoComplete='address-line1'
+              />
+            </div>
+            <div className='flex flex-row justify-center items-center gap-1 w-full '>
+              <p className='border rounded-md p-1 w-17 bg-neutral-50'>Line 1</p>
+              <Input 
+                type="text" 
+                id="addressLine_1" 
+                name='addressLine_1' 
+                placeholder="york Street" 
+                required
+                value={formData.address.addressLine_1}
+                onChange={handleAddressChange}
+                autoComplete='address-line2'
+              />
+            </div>
+            <div className='flex flex-row justify-center items-center gap-1 w-full'>
+              <p className='border rounded-md p-1 w-17 bg-neutral-50'>Line 2</p>
+              <Input 
+                type="text" 
+                id="addressLine_2" 
+                name='addressLine_2' 
+                placeholder="Colombo 5" 
+                required
+                value={formData.address.addressLine_2}
+                onChange={handleAddressChange}
+                autoComplete='address-line3'
+              />
+            </div>
+
+            <div className='w-full flex flex-row justify-center items-center my-1'>
+              <hr className='w-sm'/>
+            </div>
+            
+            <div className='flex flex-row justify-center items-center gap-1 w-full'>
+              <p className='border rounded-md p-1 w-35 bg-neutral-50'>Nearest City</p>
+              <Input 
+                type="text" 
+                id="city" 
+                name='city' 
+                placeholder="Maharagama" 
+                required
+                value={formData.address.city}
+                onChange={handleAddressChange}
+              />
+            </div>
+            <div className='flex flex-row justify-center items-center gap-1 w-full'>
+              <p className='border rounded-md p-1 w-35 bg-neutral-50'>Province</p>
+              <Input 
+                type="text" 
+                id="province" 
+                name='province' 
+                placeholder="Western" 
+                required
+                value={formData.address.province}
+                onChange={handleAddressChange}
+              />
+            </div>
+            <div className='flex flex-row justify-center items-center gap-1 w-full'>
+              <p className='border rounded-md p-1 w-35 bg-neutral-50'>Zip Code</p>
+              <Input 
+                type="text" 
+                id="zipcode" 
+                name='zipcode' 
+                placeholder="10200" 
+                required
+                value={formData.address.zipcode}
+                onChange={handleAddressChange}
+                autoComplete='postal-code'
               />
             </div>
           </div>
-          <div className='flex flex-col gap-2 items-start justify-center mb-5 w-auto grow-1'>
+        </div>
+
+        <div className='flex flex-row w-full mb-5 justify-between'>
+          <div className='flex flex-col gap-2 items-start justify-center'>
+            <Label htmlFor="phoneNumber_mobile">Phone Number(mobile) *</Label>
+            <div className='flex flex-row justify-center items-center gap-1'>
+              <p className='border rounded-md p-1 bg-neutral-50'>+94</p>
+              <div className='relative w-full max-w-md'>
+                <Input 
+                  type="text" 
+                  id="phoneNumber_mobile" 
+                  name='phoneNumber_mobile' 
+                  placeholder="77 888 999" 
+                  required
+                  value={ formData.phoneNumber_mobile}
+                  onChange={handleChange}
+                  className='w-42'
+                  maxLength={9}
+                />
+                {(formData.phoneNumber_mobile.trim() == '') ? null :
+                  isValidPhoneNumber(formData.phoneNumber_mobile) ? (
+                    <Image
+                      src={tickIcon}
+                      alt="tick"
+                      width={17}
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                    />
+                  ) : (
+                    <Image
+                      src={crossIcon}
+                      alt="cross"
+                      width={17}
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                    />
+                  )
+                }
+              </div>
+            </div>
+          </div>
+          <div className='flex flex-col gap-2 items-start justify-center'>
             <Label htmlFor="phoneNumber_home">Phone Number(home)</Label>
-            <div className='flex flex-row justify-center items-center gap-0'>
-              <p className='border p-1 rounded-md'>+94</p>
-              <Input 
-                type="text" 
-                id="phoneNumber_home" 
-                name='phoneNumber_home' 
-                placeholder="77 895 668" 
-                required
-                value={ formData.phoneNumber_home}
-                onChange={handleChange}
-              />
+            <div className='flex flex-row justify-center items-center gap-1'>
+              <p className='border p-1 rounded-md bg-neutral-50'>+94</p>
+              <div className='relative w-full max-w-md'>
+                <Input 
+                  type="text" 
+                  id="phoneNumber_home" 
+                  name='phoneNumber_home' 
+                  placeholder="77 888 999" 
+                  required
+                  value={ formData.phoneNumber_home}
+                  onChange={handleChange}
+                  className='w-42'
+                  maxLength={9}
+                />
+                {(formData.phoneNumber_home.trim() == '') ? null :
+                  isValidPhoneNumber(formData.phoneNumber_home) ? (
+                    <Image
+                      src={tickIcon}
+                      alt="tick"
+                      width={17}
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                    />
+                  ) : (
+                    <Image
+                      src={crossIcon}
+                      alt="cross"
+                      width={17}
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                    />
+                  )
+                }
+              </div>
             </div>
           </div>
         </div>
