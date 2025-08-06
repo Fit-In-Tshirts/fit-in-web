@@ -6,15 +6,18 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import userIcon from '../../icons/user.svg'
 import Image from 'next/image'
-import { JSX, useEffect, useState } from 'react'
-import { signup } from './actions'
-
+import { JSX, useActionState, useEffect, useState } from 'react'
+import { signupAction, SignupState } from './actions'
 import tickIcon from '../../icons/correct.png'
 import crossIcon from '../../icons/wrong.png'
 import Link from 'next/link'
 import password_lock from '../../icons/lock-close.svg'
 import password_unlock from '../../icons/lock-open.svg'
-import { Passero_One } from 'next/font/google'
+import { Address } from '../../common/types'
+import { useRouter } from 'next/navigation'
+import toast from 'react-hot-toast'
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { isValidEmail, isValidPhoneNumber } from '@/common/methods'
 
 interface FormData {
   firstName: string;
@@ -22,10 +25,12 @@ interface FormData {
   email: string;
   password: string;
   confirmPassword: string;
-  deliveryAddress: string;
+  address: Address;
   phoneNumber_mobile: string;
   phoneNumber_home: string;
 }
+
+const initialState: SignupState = {}
 
 export default function SignupPage() {
   const [formData, setFormData] = useState<FormData>({
@@ -34,11 +39,22 @@ export default function SignupPage() {
     email: '',
     password: '',
     confirmPassword: '',
-    deliveryAddress: '',
+    address: {
+      houseNumber: '',
+      addressLine_1: '',
+      addressLine_2: '',
+      city: '',
+      province: '',
+      zipcode: ''
+    },
     phoneNumber_mobile: '',
     phoneNumber_home: '',
   });
+
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [state, formAction, isPending] = useActionState(signupAction, initialState)
+
+  const router = useRouter()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -48,29 +64,48 @@ export default function SignupPage() {
     }));
   };
 
-  const isValidEmail = (email: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.com$/;
-    return emailRegex.test(email);
+  const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+      setFormData(prev => ({
+        ...prev,
+        address: {
+          ...prev.address,
+          [name]: value
+        }
+      }
+    ));
   };
 
-  const SubmitVisibility = () => {
+  const handleProvinceChange = (fieldName: string, value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      address: {
+        ...prev.address,
+        [fieldName]: value
+      }
+    }));
+  };
+
+  const SubmitButtonVisibility = () => {
     if(
       formData.firstName.trim() !== '' &&
       formData.lastName.trim() !== '' &&
       formData.email.trim() !== '' &&
+      isValidEmail(formData.email.trim()) &&
       formData.password.trim() !== '' &&
       formData.password.trim() == formData.confirmPassword.trim() &&
-      formData.deliveryAddress.trim() !== '' &&
-      formData.phoneNumber_mobile.trim() !== ''
+      formData.address.houseNumber.trim() !== '' &&
+      formData.address.addressLine_1.trim() !== '' &&
+      formData.address.addressLine_2.trim() !== '' &&
+      formData.address.city.trim() !== '' &&
+      formData.address.province.trim() !== '' &&
+      formData.phoneNumber_mobile.trim() !== '' &&
+      isValidPhoneNumber(formData.phoneNumber_mobile.trim())
     ) {
       return false;
     } else {
       return true;
     }
-  }
-
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
   }
 
   const getPasswordStrength = (password: string): JSX.Element => {
@@ -95,13 +130,29 @@ export default function SignupPage() {
     }
   }
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  }
+
+  useEffect(() => {
+    if (state.error) {
+      toast.error(state.error)
+    }
+    if (state.success) {
+      toast.success(state.success)
+      setTimeout(() => {
+        router.push('/home')
+      }, 1500)
+    }
+  }, [state, router])
+
   useEffect(() => {
     console.log(formData);
   }, [formData])
 
   return (
     <div className='flex-col box-border py-10 bg-neutral-200 min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center p-4'>
-      <Form action={''} className='flex flex-col justify-center items-center bg-white rounded-2xl shadow-2xl p-8 border border-gray-100'>
+      <Form action={formAction} className='flex flex-col justify-center items-center bg-white rounded-2xl shadow-2xl p-8 border border-gray-100'>
         <div className='inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-2'>
         <Image src={userIcon} width={40} alt={'User Lock'} />
         </div>
@@ -118,6 +169,7 @@ export default function SignupPage() {
               required 
               value={formData.firstName}
               onChange={handleChange} 
+              autoComplete='name'
             />
           </div>
           <div className='flex flex-col gap-2 items-start justify-center mb-5 w-auto grow-1'>
@@ -130,6 +182,7 @@ export default function SignupPage() {
               required 
               value={formData.lastName}
               onChange={handleChange}
+              autoComplete='family-name'
             />
           </div>
         </div>
@@ -146,6 +199,7 @@ export default function SignupPage() {
               value={formData.email}
               onChange={handleChange}
               className='w-md'
+              autoComplete='email'
             />
             {(formData.email.trim() == '') ? null :
               isValidEmail(formData.email) ? (
@@ -179,6 +233,7 @@ export default function SignupPage() {
               value={formData.password}
               onChange={handleChange}
               className='w-md'
+              autoComplete='new-password'
             />
           <Image 
             onClick={togglePasswordVisibility} 
@@ -223,54 +278,189 @@ export default function SignupPage() {
           </div>
         </div>
 
-        <div className='flex flex-col gap-2 items-start justify-center mb-5'>
-          <Label htmlFor="deliveryAddress">Delivery Address *</Label>
-          <Input 
-            type="text" 
-            id="deliveryAddress" 
-            name='deliveryAddress' 
-            placeholder="No. 235, York Street, Colombo 5" 
-            required
-            value={formData.deliveryAddress}
-            onChange={handleChange}
-            className='w-md'
-          />
+        <div className='flex flex-col gap-2 items-start justify-center mb-5 w-full'>
+          <Label>Delivery Address *</Label>
+          <div id='deliveryAddress' className='flex flex-col w-full gap-1'>
+            <div className='flex flex-row justify-center items-center gap-1 w-full'>
+              <p className='border rounded-md p-1 w-17 bg-neutral-50'>No.</p>
+              <Input 
+                type="text" 
+                id="houseNumber" 
+                name='houseNumber' 
+                placeholder="235" 
+                required
+                value={formData.address.houseNumber}
+                onChange={handleAddressChange}
+                autoComplete='address-line1'
+              />
+            </div>
+            <div className='flex flex-row justify-center items-center gap-1 w-full '>
+              <p className='border rounded-md p-1 w-17 bg-neutral-50'>Line 1</p>
+              <Input 
+                type="text" 
+                id="addressLine_1" 
+                name='addressLine_1' 
+                placeholder="york Street" 
+                required
+                value={formData.address.addressLine_1}
+                onChange={handleAddressChange}
+                autoComplete='shipping address-line2'
+              />
+            </div>
+            <div className='flex flex-row justify-center items-center gap-1 w-full'>
+              <p className='border rounded-md p-1 w-17 bg-neutral-50'>Line 2</p>
+              <Input 
+                type="text" 
+                id="addressLine_2" 
+                name='addressLine_2' 
+                placeholder="Colombo 5" 
+                required
+                value={formData.address.addressLine_2}
+                onChange={handleAddressChange}
+                autoComplete='shipping address-line3'
+              />
+            </div>
+
+            <div className='w-full flex flex-row justify-center items-center my-1'>
+              <hr className='w-sm'/>
+            </div>
+            
+            <div className='flex flex-row justify-center items-center gap-1 w-full'>
+              <p className='border rounded-md p-1 w-35 bg-neutral-50'>Nearest City</p>
+              <Input 
+                type="text" 
+                id="city" 
+                name='city' 
+                placeholder="Maharagama" 
+                required
+                value={formData.address.city}
+                onChange={handleAddressChange}
+              />
+            </div>
+            <div className='flex flex-row justify-center items-center gap-1 w-full'>
+              <p className='border rounded-md p-1 w-35 bg-neutral-50'>Province</p>
+              {/* <Input 
+                type="text" 
+                id="province" 
+                name='province' 
+                placeholder="Western" 
+                required
+                value={formData.address.province}
+                onChange={handleAddressChange}
+              /> */}
+              <Select 
+                onValueChange={(value:any) => handleProvinceChange('province',value)} 
+                required value={formData.address.province}>
+                <SelectTrigger className='w-full'>
+                  <SelectValue placeholder="Province"  id='province'/>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="central">Central</SelectItem>
+                    <SelectItem value="eastern">Eastern</SelectItem>
+                    <SelectItem value="north central">North Central</SelectItem>
+                    <SelectItem value="north western">North Western</SelectItem>
+                    <SelectItem value="northern">Northern</SelectItem>
+                    <SelectItem value="sabaragamuwa">Sabaragamuwa</SelectItem>
+                    <SelectItem value="southern">Southern</SelectItem>
+                    <SelectItem value="uva">Uva</SelectItem>
+                    <SelectItem value="western">Western</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className='flex flex-row justify-center items-center gap-1 w-full'>
+              <p className='border rounded-md p-1 w-35 bg-neutral-50'>Zip Code</p>
+              <Input 
+                type="text" 
+                id="zipcode" 
+                name='zipcode' 
+                placeholder="10200" 
+                required
+                value={formData.address.zipcode}
+                onChange={handleAddressChange}
+                autoComplete='postal-code'
+              />
+            </div>
+          </div>
         </div>
 
-        <div className='flex flex-row w-full justify-between gap-1'>
-          <div className='flex flex-col gap-2 items-start justify-center mb-5 w-auto grow-1'>
+        <div className='flex flex-row w-full mb-5 justify-between'>
+          <div className='flex flex-col gap-2 items-start justify-center'>
             <Label htmlFor="phoneNumber_mobile">Phone Number(mobile) *</Label>
-            <div className='flex flex-row justify-center items-center gap-0'>
-              <p className='border rounded-md p-1'>+94</p>
-              <Input 
-                type="text" 
-                id="phoneNumber_mobile" 
-                name='phoneNumber_mobile' 
-                placeholder="77 895 668" 
-                required
-                value={ formData.phoneNumber_mobile}
-                onChange={handleChange}
-              />
+            <div className='flex flex-row justify-center items-center gap-1'>
+              <p className='border rounded-md p-1 bg-neutral-50'>+94</p>
+              <div className='relative w-full max-w-md'>
+                <Input 
+                  type="tel" 
+                  id="phoneNumber_mobile" 
+                  name='phoneNumber_mobile' 
+                  placeholder="77 888 999" 
+                  value={ formData.phoneNumber_mobile}
+                  onChange={handleChange}
+                  className='w-42'
+                  maxLength={9}
+                />
+                {(formData.phoneNumber_mobile.trim() == '') ? null :
+                  isValidPhoneNumber(formData.phoneNumber_mobile) ? (
+                    <Image
+                      src={tickIcon}
+                      alt="tick"
+                      width={17}
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                    />
+                  ) : (
+                    <Image
+                      src={crossIcon}
+                      alt="cross"
+                      width={17}
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                    />
+                  )
+                }
+              </div>
             </div>
           </div>
-          <div className='flex flex-col gap-2 items-start justify-center mb-5 w-auto grow-1'>
+          <div className='flex flex-col gap-2 items-start justify-center'>
             <Label htmlFor="phoneNumber_home">Phone Number(home)</Label>
-            <div className='flex flex-row justify-center items-center gap-0'>
-              <p className='border p-1 rounded-md'>+94</p>
-              <Input 
-                type="text" 
-                id="phoneNumber_home" 
-                name='phoneNumber_home' 
-                placeholder="77 895 668" 
-                required
-                value={ formData.phoneNumber_home}
-                onChange={handleChange}
-              />
+            <div className='flex flex-row justify-center items-center gap-1'>
+              <p className='border p-1 rounded-md bg-neutral-50'>+94</p>
+              <div className='relative w-full max-w-md'>
+                <Input 
+                  type="tel" 
+                  id="phoneNumber_home" 
+                  name='phoneNumber_home' 
+                  placeholder="77 888 999" 
+                  value={formData.phoneNumber_home}
+                  onChange={handleChange}
+                  className='w-42'
+                  maxLength={9}
+                />
+                {(formData.phoneNumber_home.trim() == '') ? null :
+                  isValidPhoneNumber(formData.phoneNumber_home) ? (
+                    <Image
+                      src={tickIcon}
+                      alt="tick"
+                      width={17}
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                    />
+                  ) : (
+                    <Image
+                      src={crossIcon}
+                      alt="cross"
+                      width={17}
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                    />
+                  )
+                }
+              </div>
             </div>
           </div>
         </div>
 
-        <Button formAction={signup} variant={'default'} disabled={SubmitVisibility()} className='w-sm mb-5'>Sign up</Button>
+        <Button type='submit' variant={'default'} disabled={SubmitButtonVisibility() || isPending} className='w-sm mb-5'>
+          {isPending ? 'Creating Account...' : 'Sign Up'}
+        </Button>
         <p className='text-center text-sm text-gray-600'>
           Already have an account? 
           <Link 

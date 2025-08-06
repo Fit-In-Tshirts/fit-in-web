@@ -9,7 +9,7 @@ import TrouserIcon from '../../icons/trouser.svg'
 import Ellipsis from '../../icons/ellipsis.svg'
 import Image from "next/image";
 import chevronDownIcon from '../../icons/chevron-down.svg'
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function DropDown() {
   const [selectedCategory, setSelectedCategory] = useState<string|null>(null)
@@ -21,10 +21,6 @@ export default function DropDown() {
   const clearCategorySelection = () => {
     setSelectedCategory(null);
   }
-
-  useEffect(() => {
-    console.log("selected: ", selectedCategory)
-  }, [selectedCategory])
 
   return (
     <DropdownMenu>
