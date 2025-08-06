@@ -6,15 +6,18 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import userIcon from '../../icons/user.svg'
 import Image from 'next/image'
-import { JSX, useEffect, useState } from 'react'
-import { signup } from './actions'
-
+import { JSX, useActionState, useEffect, useState } from 'react'
+import { signupAction, SignupState } from './actions'
 import tickIcon from '../../icons/correct.png'
 import crossIcon from '../../icons/wrong.png'
 import Link from 'next/link'
 import password_lock from '../../icons/lock-close.svg'
 import password_unlock from '../../icons/lock-open.svg'
-import { Address } from '../../types/common'
+import { Address } from '../../common/types'
+import { useRouter } from 'next/navigation'
+import toast from 'react-hot-toast'
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { isValidEmail, isValidPhoneNumber } from '@/common/methods'
 
 interface FormData {
   firstName: string;
@@ -22,12 +25,12 @@ interface FormData {
   email: string;
   password: string;
   confirmPassword: string;
-
   address: Address;
-
   phoneNumber_mobile: string;
   phoneNumber_home: string;
 }
+
+const initialState: SignupState = {}
 
 export default function SignupPage() {
   const [formData, setFormData] = useState<FormData>({
@@ -42,12 +45,16 @@ export default function SignupPage() {
       addressLine_2: '',
       city: '',
       province: '',
-      zipcode: 0
+      zipcode: ''
     },
     phoneNumber_mobile: '',
     phoneNumber_home: '',
   });
+
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [state, formAction, isPending] = useActionState(signupAction, initialState)
+
+  const router = useRouter()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -69,17 +76,17 @@ export default function SignupPage() {
     ));
   };
 
-  const isValidEmail = (email: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.com$/;
-    return emailRegex.test(email);
+  const handleProvinceChange = (fieldName: string, value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      address: {
+        ...prev.address,
+        [fieldName]: value
+      }
+    }));
   };
 
-  function isValidPhoneNumber(phone: string): boolean {
-    const regex = /^\d{9}$/;
-    return regex.test(phone);
-  }
-
-  const SubmitVisibility = () => {
+  const SubmitButtonVisibility = () => {
     if(
       formData.firstName.trim() !== '' &&
       formData.lastName.trim() !== '' &&
@@ -99,10 +106,6 @@ export default function SignupPage() {
     } else {
       return true;
     }
-  }
-
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
   }
 
   const getPasswordStrength = (password: string): JSX.Element => {
@@ -127,13 +130,29 @@ export default function SignupPage() {
     }
   }
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  }
+
+  useEffect(() => {
+    if (state.error) {
+      toast.error(state.error)
+    }
+    if (state.success) {
+      toast.success(state.success)
+      setTimeout(() => {
+        router.push('/home')
+      }, 1500)
+    }
+  }, [state, router])
+
   useEffect(() => {
     console.log(formData);
   }, [formData])
 
   return (
     <div className='flex-col box-border py-10 bg-neutral-200 min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center p-4'>
-      <Form action={''} className='flex flex-col justify-center items-center bg-white rounded-2xl shadow-2xl p-8 border border-gray-100'>
+      <Form action={formAction} className='flex flex-col justify-center items-center bg-white rounded-2xl shadow-2xl p-8 border border-gray-100'>
         <div className='inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-2'>
         <Image src={userIcon} width={40} alt={'User Lock'} />
         </div>
@@ -150,6 +169,7 @@ export default function SignupPage() {
               required 
               value={formData.firstName}
               onChange={handleChange} 
+              autoComplete='name'
             />
           </div>
           <div className='flex flex-col gap-2 items-start justify-center mb-5 w-auto grow-1'>
@@ -162,6 +182,7 @@ export default function SignupPage() {
               required 
               value={formData.lastName}
               onChange={handleChange}
+              autoComplete='family-name'
             />
           </div>
         </div>
@@ -178,6 +199,7 @@ export default function SignupPage() {
               value={formData.email}
               onChange={handleChange}
               className='w-md'
+              autoComplete='email'
             />
             {(formData.email.trim() == '') ? null :
               isValidEmail(formData.email) ? (
@@ -211,6 +233,7 @@ export default function SignupPage() {
               value={formData.password}
               onChange={handleChange}
               className='w-md'
+              autoComplete='new-password'
             />
           <Image 
             onClick={togglePasswordVisibility} 
@@ -281,7 +304,7 @@ export default function SignupPage() {
                 required
                 value={formData.address.addressLine_1}
                 onChange={handleAddressChange}
-                autoComplete='address-line2'
+                autoComplete='shipping address-line2'
               />
             </div>
             <div className='flex flex-row justify-center items-center gap-1 w-full'>
@@ -294,7 +317,7 @@ export default function SignupPage() {
                 required
                 value={formData.address.addressLine_2}
                 onChange={handleAddressChange}
-                autoComplete='address-line3'
+                autoComplete='shipping address-line3'
               />
             </div>
 
@@ -316,7 +339,7 @@ export default function SignupPage() {
             </div>
             <div className='flex flex-row justify-center items-center gap-1 w-full'>
               <p className='border rounded-md p-1 w-35 bg-neutral-50'>Province</p>
-              <Input 
+              {/* <Input 
                 type="text" 
                 id="province" 
                 name='province' 
@@ -324,7 +347,27 @@ export default function SignupPage() {
                 required
                 value={formData.address.province}
                 onChange={handleAddressChange}
-              />
+              /> */}
+              <Select 
+                onValueChange={(value:any) => handleProvinceChange('province',value)} 
+                required value={formData.address.province}>
+                <SelectTrigger className='w-full'>
+                  <SelectValue placeholder="Province"  id='province'/>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="central">Central</SelectItem>
+                    <SelectItem value="eastern">Eastern</SelectItem>
+                    <SelectItem value="north central">North Central</SelectItem>
+                    <SelectItem value="north western">North Western</SelectItem>
+                    <SelectItem value="northern">Northern</SelectItem>
+                    <SelectItem value="sabaragamuwa">Sabaragamuwa</SelectItem>
+                    <SelectItem value="southern">Southern</SelectItem>
+                    <SelectItem value="uva">Uva</SelectItem>
+                    <SelectItem value="western">Western</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
             </div>
             <div className='flex flex-row justify-center items-center gap-1 w-full'>
               <p className='border rounded-md p-1 w-35 bg-neutral-50'>Zip Code</p>
@@ -349,11 +392,10 @@ export default function SignupPage() {
               <p className='border rounded-md p-1 bg-neutral-50'>+94</p>
               <div className='relative w-full max-w-md'>
                 <Input 
-                  type="text" 
+                  type="tel" 
                   id="phoneNumber_mobile" 
                   name='phoneNumber_mobile' 
                   placeholder="77 888 999" 
-                  required
                   value={ formData.phoneNumber_mobile}
                   onChange={handleChange}
                   className='w-42'
@@ -385,12 +427,11 @@ export default function SignupPage() {
               <p className='border p-1 rounded-md bg-neutral-50'>+94</p>
               <div className='relative w-full max-w-md'>
                 <Input 
-                  type="text" 
+                  type="tel" 
                   id="phoneNumber_home" 
                   name='phoneNumber_home' 
                   placeholder="77 888 999" 
-                  required
-                  value={ formData.phoneNumber_home}
+                  value={formData.phoneNumber_home}
                   onChange={handleChange}
                   className='w-42'
                   maxLength={9}
@@ -417,7 +458,9 @@ export default function SignupPage() {
           </div>
         </div>
 
-        <Button formAction={signup} variant={'default'} disabled={false} className='w-sm mb-5'>Sign up</Button>
+        <Button type='submit' variant={'default'} disabled={SubmitButtonVisibility() || isPending} className='w-sm mb-5'>
+          {isPending ? 'Creating Account...' : 'Sign Up'}
+        </Button>
         <p className='text-center text-sm text-gray-600'>
           Already have an account? 
           <Link 

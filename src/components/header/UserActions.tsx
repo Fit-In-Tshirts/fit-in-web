@@ -1,21 +1,19 @@
 'use client'
 import { Button } from "../ui/button";
 import Image from "next/image";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import UserIcon from '../../icons/user.svg'
 import LogOut from '../../icons/log-out.svg'
 
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/utils/supabase/client'
 
 export default function UserActions() {
   const router = useRouter()
-  const supabase = createClient()
 
+  //finish the signout function later
   const handleLogout = async () => {
-    await supabase.auth.signOut()
-    router.push('/signin') // or any route
-    router.refresh() // if needed to revalidate layout
+    router.push('/signin')
+    router.refresh()
   }
 
   return (

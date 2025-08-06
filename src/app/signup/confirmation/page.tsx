@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react';
-import { Mail, CheckCircle, ArrowLeft, RefreshCw } from 'lucide-react';
+import { Mail, CheckCircle } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 
 const EmailConfirmationPage = () => {

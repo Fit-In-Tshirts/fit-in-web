@@ -1,10 +1,4 @@
 'use client'
-import Image from 'next/image'
-import FacebookIcon from '../../icons/facebook.png'
-import InstagramIcon from '../../icons/instagram.png'
-import WhatsAppIcon from '../../icons/whatsapp.png'
-
-
 
 export default function Footer() {
   return (
