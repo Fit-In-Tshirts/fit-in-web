@@ -22,10 +22,6 @@ export default function DropDown() {
     setSelectedCategory(null);
   }
 
-  useEffect(() => {
-    console.log("selected: ", selectedCategory)
-  }, [selectedCategory])
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

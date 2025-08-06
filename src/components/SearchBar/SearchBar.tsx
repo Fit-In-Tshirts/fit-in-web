@@ -21,7 +21,6 @@ export function SearchBar() {
         type="button"
         size="icon"
         className="absolute right-1 top-1 h-8 w-8 rounded-full hover:bg-gray-200 active:hover:bg-gray-300 text-muted-foreground bg-[#f6f6f8]"
-        onClick={() => console.log(searchText)}
       >
         <Search className="h-4 w-4" />
       </Button>
