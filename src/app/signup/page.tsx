@@ -18,6 +18,7 @@ import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { isValidEmail, isValidPhoneNumber } from '@/common/methods'
+import { Loader2Icon } from 'lucide-react'
 
 interface FormData {
   firstName: string;
@@ -339,20 +340,11 @@ export default function SignupPage() {
             </div>
             <div className='flex flex-row justify-center items-center gap-1 w-full'>
               <p className='border rounded-md p-1 w-35 bg-neutral-50'>Province</p>
-              {/* <Input 
-                type="text" 
-                id="province" 
-                name='province' 
-                placeholder="Western" 
-                required
-                value={formData.address.province}
-                onChange={handleAddressChange}
-              /> */}
               <Select 
-                onValueChange={(value:any) => handleProvinceChange('province',value)} 
-                required value={formData.address.province}>
+                onValueChange={(value:any) => handleProvinceChange('province', value)} 
+                required value={formData.address.province} name='province'>
                 <SelectTrigger className='w-full'>
-                  <SelectValue placeholder="Province"  id='province'/>
+                  <SelectValue placeholder="Province" id='province'/>
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
@@ -459,7 +451,9 @@ export default function SignupPage() {
         </div>
 
         <Button type='submit' variant={'default'} disabled={SubmitButtonVisibility() || isPending} className='w-sm mb-5'>
-          {isPending ? 'Creating Account...' : 'Sign Up'}
+          {isPending ? 
+            <><Loader2Icon className="animate-spin" />
+              Please wait</> : 'Sign Up'}
         </Button>
         <p className='text-center text-sm text-gray-600'>
           Already have an account? 
