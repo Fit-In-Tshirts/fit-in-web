@@ -2,6 +2,7 @@
 
 import { Address, User } from '@/types/common'
 import { API_BASE_URL, API_ENDPOINTS } from '@/constants/api'
+import { cookies } from 'next/headers'
 
 export interface SignupState {
   error?: string
@@ -41,8 +42,29 @@ export async function signupAction(prevState: SignupState, formData: FormData) :
       return { error: errorData.message || 'Signup failed' }
     }
 
-    // You might want to handle the response data (like storing tokens)
-    // const responseData = await response.json()
+    //get response data
+    const responseData = await response.json();
+
+    // Store the JWT token in httpOnly cookie for security
+    const cookieStore = await cookies();
+
+    cookieStore.set('auth-token', responseData.data.token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 60 * 60 * 24 * 7 //7days
+    })
+
+    // Optionally store user data in a separate cookie (without sensitive info)
+    cookieStore.set('user-data', JSON.stringify({
+      id: responseData.data.user.id,
+      email: responseData.data.user.email,
+      roleId: responseData.data.user.roleId
+    }), {
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 60 * 60 * 24 * 7 // 7 days
+    })
 
     return { success: 'Account created successfully!' }
   } catch (error:any) {
