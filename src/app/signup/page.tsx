@@ -13,11 +13,11 @@ import crossIcon from '../../icons/wrong.png'
 import Link from 'next/link'
 import password_lock from '../../icons/lock-close.svg'
 import password_unlock from '../../icons/lock-open.svg'
-import { Address } from '../../common/types'
+import { Address } from '../../types/common'
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { isValidEmail, isValidPhoneNumber } from '@/common/methods'
+import { isValidEmail, isValidPhoneNumber } from '@/utils/validation'
 import { Loader2Icon } from 'lucide-react'
 
 interface FormData {

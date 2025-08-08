@@ -1,6 +1,6 @@
 'use server'
 
-import { Address, User } from '@/common/types'
+import { Address, User } from '@/types/common'
 import { API_BASE_URL, API_ENDPOINTS } from '@/constants/api'
 
 export interface SignupState {
