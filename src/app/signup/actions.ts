@@ -41,6 +41,9 @@ export async function signupAction(prevState: SignupState, formData: FormData) :
       return { error: errorData.message || 'Signup failed' }
     }
 
+    // You might want to handle the response data (like storing tokens)
+    // const responseData = await response.json()
+
     return { success: 'Account created successfully!' }
   } catch (error:any) {
     return { error: error.message || 'Something went wrong' }

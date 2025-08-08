@@ -1,18 +1,24 @@
 'use client'
 
 import { Label } from '@/components/ui/label'
-import { signin } from './actions'
+import { signinAction, SigninState } from './actions'
 import Form from 'next/form'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import userIcon from '../../icons/user.svg'
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
+import { useActionState, useEffect, useState } from 'react'
 import tickIcon from '../../icons/correct.png'
 import crossIcon from '../../icons/wrong.png'
 import password_lock from '../../icons/lock-close.svg'
 import password_unlock from '../../icons/lock-open.svg'
 import Link from 'next/link'
+import { isValidEmail } from '@/common/methods'
+import { useRouter } from 'next/navigation'
+import toast from 'react-hot-toast'
+import { Loader2Icon } from 'lucide-react'
+
+const initialState: SigninState = {}
 
 export default function SigninPage() {
   const [formData, setFormData] = useState({
@@ -20,19 +26,16 @@ export default function SigninPage() {
     password: '',
   });
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [state, formAction, isPending] = useActionState(signinAction, initialState);
 
+  const router = useRouter()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const isValidEmail = (email: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.com$/;
-    return emailRegex.test(email);
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
   };
 
   const togglePasswordVisibility = () => {
@@ -42,6 +45,7 @@ export default function SigninPage() {
   const SubmitVisibility = () => {
     if(
       formData.email.trim() !== '' &&
+      isValidEmail(formData.email.trim()) &&
       formData.password.trim() !== ''
     ) {
       return false;
@@ -51,12 +55,24 @@ export default function SigninPage() {
   }
 
   useEffect(() => {
+    if (state.error) {
+      toast.error(state.error)
+    }
+    if (state.success) {
+      toast.success(state.success)
+      setTimeout(() => {
+        router.push('/home')
+      }, 1500)
+    }
+  }, [state, router])
+
+  useEffect(() => {
     console.log(formData);
   }, [formData])
 
   return (
     <div className='flex-col box-border py-10 bg-neutral-200 min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center p-4'>
-      <Form action={''} className='flex flex-col justify-center items-center bg-white rounded-2xl shadow-2xl p-8 border border-gray-100'>
+      <Form action={formAction} className='flex flex-col justify-center items-center bg-white rounded-2xl shadow-2xl p-8 border border-gray-100'>
         <div className='inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-2'>
         <Image src={userIcon} width={40} alt={'User Lock'} />
         </div>
@@ -118,7 +134,10 @@ export default function SigninPage() {
           </div>
         </div>
 
-        <Button formAction={signin} variant={'default'} disabled={SubmitVisibility()} className='w-sm mb-5'>Sign in</Button>
+        <Button type='submit' variant={'default'} disabled={SubmitVisibility()} className='w-sm mb-5'>
+           {isPending ? 
+            <><Loader2Icon className="animate-spin" />Please wait</> : 'Sign in'}
+        </Button>
         <p className='text-center text-sm text-gray-600'>
           Don't have an account? 
           <Link 

@@ -452,8 +452,7 @@ export default function SignupPage() {
 
         <Button type='submit' variant={'default'} disabled={SubmitButtonVisibility() || isPending} className='w-sm mb-5'>
           {isPending ? 
-            <><Loader2Icon className="animate-spin" />
-              Please wait</> : 'Sign Up'}
+            <><Loader2Icon className="animate-spin" />Please wait</> : 'Sign Up'}
         </Button>
         <p className='text-center text-sm text-gray-600'>
           Already have an account? 
