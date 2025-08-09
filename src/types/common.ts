@@ -16,3 +16,11 @@ export type User = {
   phoneNumber_mobile: string,
   phoneNumber_home: string,
 }
+
+export interface UserDataFromCookie {
+  id: string,
+  email: string,
+  roleId: string,
+  firstName: string,
+  lastName: string
+}

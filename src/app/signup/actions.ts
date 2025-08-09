@@ -59,7 +59,9 @@ export async function signupAction(prevState: SignupState, formData: FormData) :
     cookieStore.set('user-data', JSON.stringify({
       id: responseData.data.user.id,
       email: responseData.data.user.email,
-      roleId: responseData.data.user.roleId
+      roleId: responseData.data.user.roleId,
+      firstName: responseData.data.user.firstName,
+      lastName: responseData.data.user.lastName
     }), {
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
