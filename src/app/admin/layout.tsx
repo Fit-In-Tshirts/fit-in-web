@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
-import Header from "@/components/header/Header";
-import Footer from "@/components/footer/Footer";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { AdminSidebar } from "@/components/adminSidebar/AdminSidebar";
 import AdminHeader from "@/components/adminHeader/adminHeader";
 
@@ -19,11 +17,11 @@ export default function AdminLayout({
     <>
       <SidebarProvider>
         <AdminSidebar />
-        <main className="flex flex-col w-full">
+        <main className="flex flex-col w-full items-center justify-start">
           <AdminHeader />
           {children}
         </main>
       </SidebarProvider>
-    </> 
+    </>
   );
 }
