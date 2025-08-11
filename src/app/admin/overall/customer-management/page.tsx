@@ -33,7 +33,7 @@ export default function CustomerManagement() {
 
   return (
     <div className="container p-5 flex flex-col justify-center items-center">
-      {isLoading && <div className="flex flex-row justify-center items-center gap-2"><Loader2Icon className="animate-spin" />Loading customers...</div>}
+      {isLoading && <div className="flex flex-row justify-start items-start gap-2"><Loader2Icon className="animate-spin" />Loading customers...</div>}
       
       {!isLoading && customers.length > 0 && (
         <DataTable columns={columns} data={customers} />

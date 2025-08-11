@@ -19,6 +19,7 @@ export type User = {
 
 // Customer * needs fine tuning with the DB.
 export type Customer = {
+  id: any
   firstName: string,
   lastName: string,
   email: string,

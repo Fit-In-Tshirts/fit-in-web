@@ -288,7 +288,7 @@ export default function SignupPage() {
                 type="text" 
                 id="houseNumber" 
                 name='houseNumber' 
-                placeholder="235" 
+                placeholder="235/2" 
                 required
                 value={formData.address.houseNumber}
                 onChange={handleAddressChange}
@@ -301,7 +301,7 @@ export default function SignupPage() {
                 type="text" 
                 id="addressLine1" 
                 name='addressLine1' 
-                placeholder="york Street" 
+                placeholder="York Street" 
                 required
                 value={formData.address.addressLine1}
                 onChange={handleAddressChange}
@@ -314,7 +314,7 @@ export default function SignupPage() {
                 type="text" 
                 id="addressLine2" 
                 name='addressLine2' 
-                placeholder="Colombo 5" 
+                placeholder="Colombo 1" 
                 required
                 value={formData.address.addressLine2}
                 onChange={handleAddressChange}
