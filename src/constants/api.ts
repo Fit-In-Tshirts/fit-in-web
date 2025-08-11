@@ -6,10 +6,14 @@ export const API_ENDPOINTS = {
     SIGNUP: '/auth/signup',
     // LOGOUT: '/auth/logout',
   },
-  // USERS: {
-  //   GET_ALL: '/users',
-  //   GET_BY_ID: (id: string) => `/users/${id}`,
-  // },
+  USER: {
+    GET_ALL: '/user/getall',
+    //GET_BY_ID: (id: string) => `/users/${id}`,
+  },
+  CUSTOMER: {
+    GET_ALL: '/customer/getall',
+    //GET_BY_ID: (id: string) => `/users/${id}`,
+  },
   // PRODUCTS: {
   //   GET_ALL: '/products',
   //   GET_BY_ID: (id: string) => `/products/${id}`,

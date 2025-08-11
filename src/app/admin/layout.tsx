@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AdminSidebar } from "@/components/adminSidebar/AdminSidebar";
-import AdminHeader from "@/components/adminHeader/adminHeader";
+import AdminHeader from "@/components/adminHeader/AdminHeader";
 
 export const metadata: Metadata = {
   title: "Create Next App",

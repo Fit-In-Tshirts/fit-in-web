@@ -10,11 +10,9 @@ export async function profileAction() {
     method: "GET",
   });
 
-  const result = await response.json();
-
   if (!response.ok) {
-    throw new Error(result.message || "Failed to fetch profile");
+    throw new Error(response.data.message || "Failed to fetch profile");
   }
 
-  return result; // ✅ return data
+  return response.data; // ✅ return data
 }
