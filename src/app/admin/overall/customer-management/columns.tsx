@@ -25,9 +25,9 @@ export const columns: ColumnDef<Customer>[] = [
       return row.original.addresses[0].city;
     }
   },
-  { accessorKey: "zipCode", header: "Zip Code",
+  { accessorKey: "zipcode", header: "Zip Code",
     cell: ({ row }) => {
-      return row.original.addresses[0].zipCode;
+      return row.original.addresses[0].zipcode;
     }
   },
   {

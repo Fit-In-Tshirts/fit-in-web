@@ -32,7 +32,7 @@ export type CustomerAddress = {
   addressLine2: string,
   city: string,
   province: string,
-  zipCode: string
+  zipcode: string
 }
 
 export type phoneNumber = {
