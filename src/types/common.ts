@@ -1,7 +1,7 @@
 export type Address = {
   houseNumber: string,
-  addressLine_1: string,
-  addressLine_2: string,
+  addressLine1: string,
+  addressLine2: string,
   city: string,
   province: string,
   zipcode: string
