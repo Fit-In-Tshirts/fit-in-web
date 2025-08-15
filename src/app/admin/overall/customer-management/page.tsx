@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import type { Customer, CustomerFilter, Paginator, SortOrder, SortingState } from "@/types/common"
 import TableWithPagination, { TableWithPaginationRef } from "../../../../components/table/Table"
+import toast from "react-hot-toast"
 
 const initialFilter: CustomerFilter = {
   email: '',
@@ -49,12 +50,19 @@ export default function CustomerManagement() {
     try {
       setIsLoading(true);
       const response = await getCustomers({}, filter, sort, currentPaginator);
-      console.log("response: ", response)
+            
+      if(response.error) {
+        toast.error("Failed to load customer")
+      }
+
+      if(response.success) {
+        setCustomers(response.data.customers);
+        setTotalRecords(response.data.totalRecords);
+      }
       
-      setCustomers(response.data.customers);
-      setTotalRecords(response.data.totalRecords);
-    } catch (error) {
-      console.error('Failed to fetch customers:', error);
+    } catch (error:any) {
+      //console.error('Failed to fetch customers:', error);
+      toast.error(error.message)
     } finally {
       setIsLoading(false);
     }
