@@ -46,7 +46,8 @@ export async function authenticatedFetch(url: string, options: RequestInit = {})
     ok: response.ok,
     status: response.status,
     statusText: response.statusText,
-    data: responseData
+    message: responseData.message,
+    data: responseData.data,
   };
 }
 

@@ -1,75 +1,30 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
 import { Customer } from "@/types/common"
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown } from "lucide-react"
 
 export const columns: ColumnDef<Customer>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value:any) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value:any) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
   { 
-    accessorKey: "email", 
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Email
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      )
+    id: 'index',
+    header: "No.",
+    cell: ({ row }) => {
+      return (row.index + 1)
     }
   },
   { 
+    accessorKey: "email", 
+    id:"email",
+    header: "Email"
+  },
+  { 
     accessorKey: "firstName", 
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          First Name
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      )
-    },
+    id:"firstName",
+    header:"First Name"
   },
   { 
     accessorKey: "lastName", 
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Last Name
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      )
-    },
+    id:"lastName",
+    header:"Last Name"
   },
   {
     accessorKey: 'address',
@@ -108,7 +63,7 @@ export const columns: ColumnDef<Customer>[] = [
     id: 'phoneNumber_mobile',
     header: "Contact(Mobile)",
     cell: ({ row }) => {
-      return row.original.phoneNumbers[0] ? row.original.phoneNumbers[0].phoneNumber : '-';
+      return row.original.phoneNumbers[0].phoneNumber;
     }
   },
   {
