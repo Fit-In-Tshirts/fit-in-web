@@ -2,8 +2,7 @@
 
 import { useEffect, useState, useRef } from "react"
 import { getCustomers } from "./action"
-import { columns } from "./columns"
-import { Loader2Icon } from "lucide-react"
+import { getCustomerColumns } from "./columns"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -11,6 +10,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import type { Customer, CustomerFilter, Paginator, SortOrder, SortingState } from "@/types/common"
 import TableWithPagination, { TableWithPaginationRef } from "../../../../components/table/Table"
 import toast from "react-hot-toast"
+import DeleteCustomerModal from "./DeleteCustomerModal"
 
 const initialFilter: CustomerFilter = {
   email: '',
@@ -30,10 +30,8 @@ const initialSorting: SortingState = {
 }
 
 export default function CustomerManagement() {
-  // Refs for accessing table methods
   const tableRef = useRef<TableWithPaginationRef>(null);
-
-  // State management
+  const [selectedCustomerId, setSelectedCustomerId] = useState<string>('')
   const [customers, setCustomers] = useState<Customer[]>([])
   const [totalRecords, setTotalRecords] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
@@ -44,8 +42,9 @@ export default function CustomerManagement() {
     pageIndex: 0,
     totalRecords: 0
   })
+  const [isDelteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
+  const [isModalDataLoading, setIsModalDataLoading] = useState<boolean>(false);
 
-  // Fetch data function
   const fetchCustomersData = async () => {
     try {
       setIsLoading(true);
@@ -61,39 +60,30 @@ export default function CustomerManagement() {
       }
       
     } catch (error:any) {
-      //console.error('Failed to fetch customers:', error);
       toast.error(error.message)
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Handle pagination changes from table
   const handlePaginationChange = (paginator: Paginator) => {
     setCurrentPaginator(paginator);
   };
 
-  // Fetch data when pagination changes
   useEffect(() => {
     fetchCustomersData();
   }, [currentPaginator.pageIndex, currentPaginator.pageSize]);
 
-  // Handle filter changes - reset pagination and fetch
   useEffect(() => {
-    // Reset pagination to first page when filters change
     if (tableRef.current) {
       tableRef.current.resetPagination();
     }
-    // fetchCustomersData will be called automatically when pagination resets
   }, [filter]);
 
-  // Handle sorting changes - reset pagination and fetch
   useEffect(() => {
-    // Reset pagination to first page when sorting changes
     if (tableRef.current) {
       tableRef.current.resetPagination();
     }
-    // fetchCustomersData will be called automatically when pagination resets
   }, [sort]);
 
   const handleChange = (e: any) => {
@@ -107,21 +97,16 @@ export default function CustomerManagement() {
   const handleReset = () => {
     setFilter(initialFilter);
     setSort(initialSorting);
-    // Table pagination will be reset automatically by the useEffect above
   };
 
-  const handleManualSearch = () => {
-    // Force refetch with current state
+  const handleFilterSearch = () => {
     fetchCustomersData();
   };
 
-  // Custom loading component
-  const LoadingComponent = () => (
-    <div className="flex flex-row justify-start items-start gap-2 p-8">
-      <Loader2Icon className="animate-spin" />
-      Loading customers...
-    </div>
-  );
+  const deleteCustomer = (id: string) => {
+    setIsDeleteModalOpen(true);
+    setSelectedCustomerId(id);
+  }
 
   const Filters = () => {
     return (
@@ -278,7 +263,7 @@ export default function CustomerManagement() {
           <Button 
             variant={'outline'} 
             className="w-25 bg-green-400 hover:bg-green-500" 
-            onClick={handleManualSearch}
+            onClick={handleFilterSearch}
           >
             Search
           </Button>
@@ -300,12 +285,22 @@ export default function CustomerManagement() {
         {Filters()}
         <TableWithPagination
           ref={tableRef}
-          columns={columns}
+          columns={getCustomerColumns({
+            //onEdit: handleEdit,
+            onDelete: deleteCustomer
+          })}
           data={customers}
           isLoading={isLoading}
           totalRecords={totalRecords}
           initialPageSize={10}
           onPaginationChange={handlePaginationChange}
+        />
+
+        <DeleteCustomerModal 
+          isModalOpen={isDelteModalOpen} 
+          onOpenChange={() => setIsDeleteModalOpen(false)} 
+          selectedId={selectedCustomerId}
+          refreshFunction={fetchCustomersData} 
         />
       </div>
     </div>

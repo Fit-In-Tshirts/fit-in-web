@@ -23,8 +23,8 @@ export type Customer = {
   firstName: string,
   lastName: string,
   email: string,
-  addresses: Address[]
-  phoneNumbers: phoneNumber[]
+  addresses: CustomerAddress[]
+  phoneNumbers: CustomerPhoneNumber[]
 }
 
 export type phoneNumber = {
@@ -68,4 +68,35 @@ export type SortOrder = 'asc' | 'desc' | null;
 export interface SortingState {
   column: string | null;
   order: SortOrder;
+}
+
+export interface CustomerFlatten {
+  firstName: string,
+  lastName: string,
+  email: string,
+  addressId?: number,
+  houseNumber: string,
+  addressLine1: string,
+  addressLine2: string,
+  city: string,
+  province: string,
+  zipcode: string,
+  phoneNumber_mobile: string,
+  phoneNumber_home: string,
+}
+
+export interface CustomerAddress {
+  id?: number,
+  houseNumber: string,
+  addressLine1: string,
+  addressLine2: string,
+  city: string,
+  province: string,
+  zipcode: string
+}
+
+export interface CustomerPhoneNumber {
+  id?: number,
+  phoneNumber: string,
+  phoneType?: PhoneType
 }

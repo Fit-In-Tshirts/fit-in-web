@@ -1,7 +1,8 @@
 import { API_BASE_URL, API_ENDPOINTS } from "@/constants/api";
-import { Customer, CustomerFilter, Paginator } from "@/types/common";
+import { CustomerFilter, Paginator } from "@/types/common";
 import { authenticatedFetch } from "@/utils/auth";
 import { SortingState } from "@/types/common";
+import { json } from "stream/consumers";
 
 export interface RequestState {
   error?: string
@@ -13,7 +14,6 @@ export async function getCustomers(prev: RequestState, customerFilter: CustomerF
   try {
     const queryParams = new URLSearchParams();
 
-    // Add pagination parameters
     if (paginator.pageSize !== undefined) {
       queryParams.append('pageSize', paginator.pageSize.toString());
     }
@@ -21,7 +21,6 @@ export async function getCustomers(prev: RequestState, customerFilter: CustomerF
       queryParams.append('pageIndex', paginator.pageIndex.toString());
     }
 
-    // Add sorting parameters
     if (sortingState.column) {
       queryParams.append('sortColumn', sortingState.column.toString());
     }
@@ -29,7 +28,6 @@ export async function getCustomers(prev: RequestState, customerFilter: CustomerF
       queryParams.append('sortOrder', sortingState.order.toString());
     }
 
-    // Add filter parameters (only if they have values)
     if (customerFilter.email && customerFilter.email.trim() !== '') {
       queryParams.append('email', customerFilter.email.trim());
     }
@@ -58,7 +56,6 @@ export async function getCustomers(prev: RequestState, customerFilter: CustomerF
       queryParams.append('zipcode', customerFilter.zipcode.trim());
     }
 
-    // Build the complete URL
     const endpoint = `${API_BASE_URL}${API_ENDPOINTS.CUSTOMER.GET_ALL}`
     const url = queryParams.toString() ? `${endpoint}?${queryParams.toString()}` : endpoint;
 
@@ -72,14 +69,12 @@ export async function getCustomers(prev: RequestState, customerFilter: CustomerF
       };
     }
 
-    // Validate response structure
     if (!response.data.customers) {
       return { 
         error: 'Invalid response format: missing user data' 
       };
     }
 
-    // Extract and serialize user data
     const customers = response.data.customers;
     const serializedCustomers = JSON.parse(JSON.stringify(customers));
 
@@ -94,6 +89,70 @@ export async function getCustomers(prev: RequestState, customerFilter: CustomerF
   } catch (error: any) {
     return { 
       error: error.message || 'Failed to load customers' 
+    };
+  }
+}
+
+export async function getCustomerById(id: string) {
+  try {
+    const queryParams = new URLSearchParams();
+
+    if (id !== undefined) {
+      queryParams.append('id', id.toString());
+    }
+
+    const endpoint = `${API_BASE_URL}${API_ENDPOINTS.CUSTOMER.GET_BY_ID}`
+    const url = `${endpoint}?${queryParams.toString()}`;
+
+    const response = await authenticatedFetch(url, {
+      method: 'GET',
+    });
+
+    if (!response.ok) {
+      return { 
+        error: response.message || `HTTP ${response.status}: ${response.statusText}` 
+      };
+    }
+
+    if (!response.data) {
+      return { 
+        error: response.message || 'Invalid response format: missing user data' 
+      };
+    }
+
+    return {
+      success: response.data.message || 'Customers loaded successfully',
+      data: response.data
+    };
+
+  } catch(error:any) {
+    return {
+      error: error.message || 'Failed to get customer information' 
+    };
+  }
+}
+
+export async function deleteCustomerById(id: string):Promise<RequestState> {
+  try {
+    const url = `${API_BASE_URL}${API_ENDPOINTS.CUSTOMER.DELETE_BY_ID}`
+
+    const response = await authenticatedFetch(url, {
+      method: 'DELETE',
+      body: JSON.stringify({id:id})
+    });
+
+    if (!response.ok) {
+      return { 
+        error: response.message || `HTTP ${response.status}: ${response.statusText}` 
+      };
+    }
+
+    return {
+      success: response.message || 'Customers deleted successfully',
+    };
+  } catch(error: any) {
+    return {
+      error: error.message || 'Failed to delete customer' 
     };
   }
 }
