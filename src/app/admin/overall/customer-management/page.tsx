@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import type { Customer, CustomerFilter, Paginator, SortOrder, SortingState } from "@/types/common"
+import type { Customer, CustomerFilter, Paginator, SortOrder, SortingState, UserBasicInfo } from "@/types/common"
 import TableWithPagination, { TableWithPaginationRef } from "../../../../components/table/Table"
 import toast from "react-hot-toast"
 import DeleteCustomerModal from "./DeleteCustomerModal"
@@ -31,7 +31,7 @@ const initialSorting: SortingState = {
 
 export default function CustomerManagement() {
   const tableRef = useRef<TableWithPaginationRef>(null);
-  const [selectedCustomerId, setSelectedCustomerId] = useState<string>('')
+  const [selectedCustomer, setSelectedCustomer] = useState<UserBasicInfo>()
   const [customers, setCustomers] = useState<Customer[]>([])
   const [totalRecords, setTotalRecords] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
@@ -103,9 +103,9 @@ export default function CustomerManagement() {
     fetchCustomersData();
   };
 
-  const deleteCustomer = (id: string) => {
+  const deleteCustomer = (customer: UserBasicInfo) => {
     setIsDeleteModalOpen(true);
-    setSelectedCustomerId(id);
+    setSelectedCustomer(customer);
   }
 
   const Filters = () => {
@@ -299,7 +299,7 @@ export default function CustomerManagement() {
         <DeleteCustomerModal 
           isModalOpen={isDelteModalOpen} 
           onOpenChange={() => setIsDeleteModalOpen(false)} 
-          selectedId={selectedCustomerId}
+          selectedCustomer={selectedCustomer}
           refreshFunction={fetchCustomersData} 
         />
       </div>

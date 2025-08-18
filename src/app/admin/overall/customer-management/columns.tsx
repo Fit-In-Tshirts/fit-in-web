@@ -1,13 +1,13 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Customer } from "@/types/common"
+import { Customer, UserBasicInfo } from "@/types/common"
 import { ColumnDef } from "@tanstack/react-table"
 import { Trash, Pencil } from "lucide-react"
 
 type ColumnProps = {
   onEdit?: (id: string) => void
-  onDelete?: (id: string) => void
+  onDelete?: (customer: UserBasicInfo) => void
 }
 
 export const getCustomerColumns = ({
@@ -80,21 +80,18 @@ export const getCustomerColumns = ({
     id: "actions",
     header: "Actions",
     cell: ({ row }) => {
-      const customerId = row.original.id
+      const customer:UserBasicInfo = {
+        id: row.original.id,
+        firstName: row.original.firstName,
+        lastName: row.original.lastName,
+        email: row.original.email
+      }
       return (
         <div className="flex flex-row gap-2 justify-center items-center">
-          {/* <Button
-            variant="ghost"
-            className="bg-neutral-300 hover:bg-neutral-400 rounded-full"
-            onClick={() => console.log(customerId)}
-            size={'sm'}
-          >
-            <Pencil />
-          </Button> */}
           <Button
             variant="ghost"
-            className="bg-red-400 hover:bg-red-500 rounded-full"
-            onClick={() => onDelete ? onDelete(customerId):undefined}
+            className="border bg-neutral-300 hover:bg-neutral-400 border-neutral-300 hover:border-neutral-400 rounded-full"
+            onClick={() => onDelete && onDelete(customer)}
             size={'sm'}
           >
             <Trash />

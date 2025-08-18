@@ -45,6 +45,13 @@ export interface UserDataFromCookie {
   lastName: string
 }
 
+export interface UserBasicInfo {
+  id: string,
+  email: string,
+  firstName: string,
+  lastName: string
+}
+
 export interface CustomerFilter {
   email: string,
   firstName: string,
