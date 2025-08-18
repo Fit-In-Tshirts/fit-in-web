@@ -67,7 +67,7 @@ export interface CustomerFilter {
 export interface Paginator {
   pageSize: number,         // number of records per page
   pageIndex: number,         // current page number (0-based)
-  totalRecords?: number,      // total items from server
+  totalRecords: number,      // total items from server
 }
 
 export type SortOrder = 'asc' | 'desc' | null;

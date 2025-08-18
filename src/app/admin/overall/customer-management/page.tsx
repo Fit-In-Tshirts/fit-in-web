@@ -37,18 +37,17 @@ export default function CustomerManagement() {
   const [isLoading, setIsLoading] = useState(true)
   const [filter, setFilter] = useState(initialFilter)
   const [sort, setSort] = useState<SortingState>(initialSorting)
-  const [currentPaginator, setCurrentPaginator] = useState<Paginator>({
+  const [paginator, setPaginator] = useState<Paginator>({
     pageSize: 10,
     pageIndex: 0,
     totalRecords: 0
   })
   const [isDelteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
-  const [isModalDataLoading, setIsModalDataLoading] = useState<boolean>(false);
 
   const fetchCustomersData = async () => {
     try {
       setIsLoading(true);
-      const response = await getCustomers({}, filter, sort, currentPaginator);
+      const response = await getCustomers({}, filter, sort, paginator);
             
       if(response.error) {
         toast.error("Failed to load customer")
@@ -67,12 +66,12 @@ export default function CustomerManagement() {
   };
 
   const handlePaginationChange = (paginator: Paginator) => {
-    setCurrentPaginator(paginator);
+    setPaginator(paginator);
   };
 
   useEffect(() => {
     fetchCustomersData();
-  }, [currentPaginator.pageIndex, currentPaginator.pageSize]);
+  }, [paginator.pageIndex, paginator.pageSize]);
 
   useEffect(() => {
     if (tableRef.current) {
@@ -94,7 +93,6 @@ export default function CustomerManagement() {
   const handleReset = () => {
     setFilter(initialFilter);
     setSort(initialSorting);
-    fetchCustomersData()
   };
 
   const handleFilterSearch = () => {
@@ -105,6 +103,11 @@ export default function CustomerManagement() {
     setIsDeleteModalOpen(true);
     setSelectedCustomer(customer);
   }
+  
+  // useEffect(() => {
+  //   console.log("currentPaginator: ", paginator)
+  //   console.log("totalRecords: ", totalRecords)
+  // }, [paginator])
 
   const Filters = () => {
     return (
@@ -285,7 +288,8 @@ export default function CustomerManagement() {
           ref={tableRef}
           columns={getCustomerColumns({
             //onEdit: handleEdit,
-            onDelete: deleteCustomer
+            onDelete: deleteCustomer,
+            paginator: paginator
           })}
           data={customers}
           isLoading={isLoading}
