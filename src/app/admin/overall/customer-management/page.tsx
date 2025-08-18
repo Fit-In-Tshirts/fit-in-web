@@ -78,13 +78,10 @@ export default function CustomerManagement() {
     if (tableRef.current) {
       tableRef.current.resetPagination();
     }
-  }, [filter]);
-
-  useEffect(() => {
-    if (tableRef.current) {
-      tableRef.current.resetPagination();
+    if (filter === initialFilter && sort === initialSorting) {
+      fetchCustomersData();
     }
-  }, [sort]);
+  }, [filter, sort]);
 
   const handleChange = (e: any) => {
     const { name, value } = e.target;
@@ -97,6 +94,7 @@ export default function CustomerManagement() {
   const handleReset = () => {
     setFilter(initialFilter);
     setSort(initialSorting);
+    fetchCustomersData()
   };
 
   const handleFilterSearch = () => {
