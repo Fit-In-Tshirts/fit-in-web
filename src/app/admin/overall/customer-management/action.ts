@@ -1,5 +1,5 @@
 import { API_BASE_URL, API_ENDPOINTS } from "@/constants/api";
-import { CustomerFilter, Paginator } from "@/types/common";
+import { CustomerAddress, CustomerFilter, CustomerPersonalInfo, CustomerPhoneNumber, Paginator } from "@/types/common";
 import { authenticatedFetch } from "@/utils/auth";
 import { SortingState } from "@/types/common";
 import { json } from "stream/consumers";
@@ -93,7 +93,7 @@ export async function getCustomers(prev: RequestState, customerFilter: CustomerF
   }
 }
 
-export async function getCustomerById(id: string) {
+export async function getCustomerById(id: string): Promise<RequestState> {
   try {
     const queryParams = new URLSearchParams();
 
@@ -153,6 +153,41 @@ export async function deleteCustomerById(id: string):Promise<RequestState> {
   } catch(error: any) {
     return {
       error: error.message || 'Failed to delete customer' 
+    };
+  }
+}
+
+export async function updateCustomerInfo(
+  personalInfo: CustomerPersonalInfo, 
+  addressInfo: CustomerAddress,
+  contactInfo: CustomerPhoneNumber[]
+) : Promise<RequestState> {
+  try {
+    const url = `${API_BASE_URL}${API_ENDPOINTS.CUSTOMER.UPDATE}`
+
+    const body = {
+      personalInfo: personalInfo,
+      addressInfo: addressInfo,
+      contactInfo: contactInfo
+    }
+
+    const response = await authenticatedFetch(url, {
+      method: 'PATCH',
+      body: JSON.stringify(body)
+    });
+
+    if (!response.ok) {
+      return { 
+        error: response.message || `HTTP ${response.status}: ${response.statusText}` 
+      };
+    }
+
+    return {
+      success: response.message || 'Customer updated successfully',
+    };
+  } catch(error:any) {
+    return {
+      error: error.message || 'Failed to update customer' 
     };
   }
 }

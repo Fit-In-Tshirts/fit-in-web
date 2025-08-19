@@ -13,5 +13,6 @@ export const API_ENDPOINTS = {
     GET_ALL: '/customer/getall',
     GET_BY_ID: '/customer/get_by_id',
     DELETE_BY_ID: '/customer/delete_by_id',
+    UPDATE: '/customer/update'
   },
 }

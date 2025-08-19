@@ -11,6 +11,7 @@ import type { Customer, CustomerFilter, Paginator, SortOrder, SortingState, User
 import TableWithPagination, { TableWithPaginationRef } from "../../../../components/table/Table"
 import toast from "react-hot-toast"
 import DeleteCustomerModal from "./DeleteCustomerModal"
+import UpdateCustomerModal from "./UpdateCustomerModal"
 
 const initialFilter: CustomerFilter = {
   email: '',
@@ -43,6 +44,8 @@ export default function CustomerManagement() {
     totalRecords: 0
   })
   const [isDelteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState<boolean>(false);
+
 
   const fetchCustomersData = async () => {
     try {
@@ -103,11 +106,11 @@ export default function CustomerManagement() {
     setIsDeleteModalOpen(true);
     setSelectedCustomer(customer);
   }
-  
-  // useEffect(() => {
-  //   console.log("currentPaginator: ", paginator)
-  //   console.log("totalRecords: ", totalRecords)
-  // }, [paginator])
+
+  const updateCustomer = (customer: UserBasicInfo) => {
+    setSelectedCustomer(customer);
+    setIsUpdateModalOpen(true);
+  }
 
   const Filters = () => {
     return (
@@ -287,7 +290,7 @@ export default function CustomerManagement() {
         <TableWithPagination
           ref={tableRef}
           columns={getCustomerColumns({
-            //onEdit: handleEdit,
+            onEdit: updateCustomer,
             onDelete: deleteCustomer,
             paginator: paginator
           })}
@@ -302,6 +305,13 @@ export default function CustomerManagement() {
           isModalOpen={isDelteModalOpen} 
           onOpenChange={() => setIsDeleteModalOpen(false)} 
           selectedCustomer={selectedCustomer}
+          refreshFunction={fetchCustomersData} 
+        />
+
+        <UpdateCustomerModal 
+          isModalOpen={isUpdateModalOpen} 
+          onOpenChange={() => setIsUpdateModalOpen(false)} 
+          selectedCustomer={selectedCustomer!}
           refreshFunction={fetchCustomersData} 
         />
       </div>

@@ -6,7 +6,7 @@ import { ColumnDef } from "@tanstack/react-table"
 import { Trash, Pencil } from "lucide-react"
 
 type ColumnProps = {
-  onEdit?: (id: string) => void
+  onEdit?: (customer: UserBasicInfo) => void
   onDelete?: (customer: UserBasicInfo) => void
   paginator?: Paginator
 }
@@ -92,7 +92,15 @@ export const getCustomerColumns = ({
         <div className="flex flex-row gap-2 justify-center items-center">
           <Button
             variant="ghost"
-            className="border bg-neutral-300 hover:bg-neutral-400 border-neutral-300 hover:border-neutral-400 rounded-full"
+            className="border bg-neutral-300 hover:bg-blue-400 border-neutral-300 hover:border-blue-400 rounded-full"
+            onClick={() => onEdit && onEdit(customer)}
+            size={'sm'}
+          >
+            <Pencil />
+          </Button>
+          <Button
+            variant="ghost"
+            className="border bg-neutral-300 hover:bg-red-400 border-neutral-300 hover:border-red-400 rounded-full"
             onClick={() => onDelete && onDelete(customer)}
             size={'sm'}
           >

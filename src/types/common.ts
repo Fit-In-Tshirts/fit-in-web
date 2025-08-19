@@ -93,7 +93,7 @@ export interface CustomerFlatten {
 }
 
 export interface CustomerAddress {
-  id?: number,
+  id?: string,
   houseNumber: string,
   addressLine1: string,
   addressLine2: string,
@@ -103,7 +103,13 @@ export interface CustomerAddress {
 }
 
 export interface CustomerPhoneNumber {
-  id?: number,
+  id: string,
   phoneNumber: string,
   phoneType?: PhoneType
+}
+
+export interface CustomerPersonalInfo {
+  id: string,
+  firstName: string,
+  lastName: string
 }
