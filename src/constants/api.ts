@@ -15,4 +15,7 @@ export const API_ENDPOINTS = {
     DELETE_BY_ID: '/customer/delete_by_id',
     UPDATE: '/customer/update'
   },
+  CATEGORY: {
+    GET_ALL: '/category/getall'
+  }
 }

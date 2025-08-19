@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Loader2Icon } from 'lucide-react';
-import { Customer, CustomerAddress, CustomerPersonalInfo, CustomerPhoneNumber, UserBasicInfo } from "@/types/common";
+import { Customer, CustomerAddress, CustomerPersonalInfo, CustomerPhoneNumber, SelectedUserInfo } from "@/types/common";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -18,7 +18,7 @@ import { capitalizeFirstLetter, isValidString } from "@/utils/UtilityFunctions";
 interface Props {
   isModalOpen: boolean,
   onOpenChange: (e:any) => void;
-  selectedCustomer?: UserBasicInfo;
+  selectedCustomer?: SelectedUserInfo;
   refreshFunction: () => void
 }
 

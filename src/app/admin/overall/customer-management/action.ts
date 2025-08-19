@@ -2,7 +2,6 @@ import { API_BASE_URL, API_ENDPOINTS } from "@/constants/api";
 import { CustomerAddress, CustomerFilter, CustomerPersonalInfo, CustomerPhoneNumber, Paginator } from "@/types/common";
 import { authenticatedFetch } from "@/utils/auth";
 import { SortingState } from "@/types/common";
-import { json } from "stream/consumers";
 
 export interface RequestState {
   error?: string

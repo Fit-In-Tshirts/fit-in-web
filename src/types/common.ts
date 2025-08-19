@@ -45,7 +45,7 @@ export interface UserDataFromCookie {
   lastName: string
 }
 
-export interface UserBasicInfo {
+export interface SelectedUserInfo {
   id: string,
   email: string,
   firstName: string,
@@ -112,4 +112,19 @@ export interface CustomerPersonalInfo {
   id: string,
   firstName: string,
   lastName: string
+}
+
+export interface SelectedCategoryInfo {
+  id:string,
+  name:string
+}
+
+export interface Category {
+  id: string,
+  name: string,
+  slug: string,
+  description?: string,
+  imageUrl?:string,
+  isActive:boolean,
+  sortOrder: number
 }

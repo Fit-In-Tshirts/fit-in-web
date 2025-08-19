@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import type { Customer, CustomerFilter, Paginator, SortOrder, SortingState, UserBasicInfo } from "@/types/common"
+import type { Customer, CustomerFilter, Paginator, SortOrder, SortingState, SelectedUserInfo } from "@/types/common"
 import TableWithPagination, { TableWithPaginationRef } from "../../../../components/table/Table"
 import toast from "react-hot-toast"
 import DeleteCustomerModal from "./DeleteCustomerModal"
@@ -32,7 +32,7 @@ const initialSorting: SortingState = {
 
 export default function CustomerManagement() {
   const tableRef = useRef<TableWithPaginationRef>(null);
-  const [selectedCustomer, setSelectedCustomer] = useState<UserBasicInfo>()
+  const [selectedCustomer, setSelectedCustomer] = useState<SelectedUserInfo>()
   const [customers, setCustomers] = useState<Customer[]>([])
   const [totalRecords, setTotalRecords] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
@@ -102,12 +102,12 @@ export default function CustomerManagement() {
     fetchCustomersData();
   };
 
-  const deleteCustomer = (customer: UserBasicInfo) => {
+  const deleteCustomer = (customer: SelectedUserInfo) => {
     setIsDeleteModalOpen(true);
     setSelectedCustomer(customer);
   }
 
-  const updateCustomer = (customer: UserBasicInfo) => {
+  const updateCustomer = (customer: SelectedUserInfo) => {
     setSelectedCustomer(customer);
     setIsUpdateModalOpen(true);
   }
@@ -284,37 +284,35 @@ export default function CustomerManagement() {
   }
 
   return (
-    <div className="container p-5 flex flex-col justify-center items-center">
-      <div className="w-full flex flex-col">
-        {Filters()}
-        <TableWithPagination
-          ref={tableRef}
-          columns={getCustomerColumns({
-            onEdit: updateCustomer,
-            onDelete: deleteCustomer,
-            paginator: paginator
-          })}
-          data={customers}
-          isLoading={isLoading}
-          totalRecords={totalRecords}
-          initialPageSize={10}
-          onPaginationChange={handlePaginationChange}
-        />
+    <div className="w-full p-5 flex flex-col">
+      {Filters()}
+      <TableWithPagination
+        ref={tableRef}
+        columns={getCustomerColumns({
+          onEdit: updateCustomer,
+          onDelete: deleteCustomer,
+          paginator: paginator
+        })}
+        data={customers}
+        isLoading={isLoading}
+        totalRecords={totalRecords}
+        initialPageSize={10}
+        onPaginationChange={handlePaginationChange}
+      />
 
-        <DeleteCustomerModal 
-          isModalOpen={isDelteModalOpen} 
-          onOpenChange={() => setIsDeleteModalOpen(false)} 
-          selectedCustomer={selectedCustomer}
-          refreshFunction={fetchCustomersData} 
-        />
+      <DeleteCustomerModal 
+        isModalOpen={isDelteModalOpen} 
+        onOpenChange={() => setIsDeleteModalOpen(false)} 
+        selectedCustomer={selectedCustomer}
+        refreshFunction={fetchCustomersData} 
+      />
 
-        <UpdateCustomerModal 
-          isModalOpen={isUpdateModalOpen} 
-          onOpenChange={() => setIsUpdateModalOpen(false)} 
-          selectedCustomer={selectedCustomer!}
-          refreshFunction={fetchCustomersData} 
-        />
-      </div>
+      <UpdateCustomerModal 
+        isModalOpen={isUpdateModalOpen} 
+        onOpenChange={() => setIsUpdateModalOpen(false)} 
+        selectedCustomer={selectedCustomer!}
+        refreshFunction={fetchCustomersData} 
+      />
     </div>
   )
 }

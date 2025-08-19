@@ -1,13 +1,13 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Customer, Paginator, UserBasicInfo } from "@/types/common"
+import { Customer, Paginator, SelectedUserInfo } from "@/types/common"
 import { ColumnDef } from "@tanstack/react-table"
 import { Trash, Pencil } from "lucide-react"
 
 type ColumnProps = {
-  onEdit?: (customer: UserBasicInfo) => void
-  onDelete?: (customer: UserBasicInfo) => void
+  onEdit?: (customer: SelectedUserInfo) => void
+  onDelete?: (customer: SelectedUserInfo) => void
   paginator?: Paginator
 }
 
@@ -82,7 +82,7 @@ export const getCustomerColumns = ({
     id: "actions",
     header: "Actions",
     cell: ({ row }) => {
-      const customer:UserBasicInfo = {
+      const customer:SelectedUserInfo = {
         id: row.original.id,
         firstName: row.original.firstName,
         lastName: row.original.lastName,

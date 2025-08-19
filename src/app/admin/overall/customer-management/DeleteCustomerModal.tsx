@@ -4,12 +4,12 @@ import { deleteCustomerById } from "./action";
 import toast from "react-hot-toast";
 import { useState } from "react";
 import { Loader2Icon } from 'lucide-react';
-import { UserBasicInfo } from "@/types/common";
+import { SelectedUserInfo } from "@/types/common";
 
 interface Props {
   isModalOpen: boolean,
   onOpenChange: (e:any) => void;
-  selectedCustomer?: UserBasicInfo;
+  selectedCustomer?: SelectedUserInfo;
   refreshFunction: () => void
 }
 

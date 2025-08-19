@@ -14,7 +14,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { 
-  Columns3Cog, LucideIcon, PackageCheck, PackagePlus, PaintBucket, StretchHorizontal, TrendingUp, UserRoundPen 
+  Columns3Cog, ListCheck, LucideIcon, PackageCheck, PackagePlus, PaintBucket, StretchHorizontal, TrendingUp, UserRoundPen 
 } from "lucide-react";
 import finderprintIcon from '../../icons/fingerprint.svg';
 import { useAdminStore } from '../../stores/useAdminStore';
@@ -37,10 +37,10 @@ export function AdminSidebar() {
   ];
 
   const ecom:SidebarMenuItem[] = [
-    { title: "New Orders", url: "/admin/ecom/new-orders", icon: PackagePlus },
-    { title: "Completed Orders", url: "/admin/ecom/completed-orders", icon: PackageCheck },
-    { title: "Item Management", url: "/admin/ecom/item-management", icon: StretchHorizontal },
-    { title: "Category Management", url: "/admin/ecom/category-management", icon: Columns3Cog },
+    { title: "Category Configuration", url: "/admin/ecom/category-configuration", icon: Columns3Cog },
+    { title: "Product Management", url: "/admin/ecom/product-management", icon: StretchHorizontal },
+    { title: "Inventory", url: "/admin/ecom/completed-orders", icon: ListCheck },
+    { title: "Orders", url: "/admin/ecom/item-management", icon: PackagePlus },
   ];
 
   const printing:SidebarMenuItem[] = [
@@ -71,7 +71,7 @@ export function AdminSidebar() {
     ));
 
   return (
-    <Sidebar side="left" variant="inset" className="bg-neutral-100">
+    <Sidebar side="left" collapsible="offcanvas" variant="inset" className="bg-neutral-100">
       <SidebarHeader className="bg-neutral-100 rounded-lg border border-neutral-200 hover:border-neutral-200 hover:bg-neutral-50 flex flex-row items-center justify-center">
         <Image src={finderprintIcon} alt="admin" width={20} />
         <p className="font-semibold">WICHITHRA</p>

@@ -1,3 +1,5 @@
+'use client'
+
 import { useEffect, useCallback, useImperativeHandle, forwardRef, useState } from "react";
 import type { Paginator } from "@/types/common";
 import { DataTable } from "./data-table";
