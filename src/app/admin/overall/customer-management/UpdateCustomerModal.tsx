@@ -14,8 +14,6 @@ import Image from 'next/image';
 import tickIcon from '../../../../icons/correct.png'
 import crossIcon from '../../../../icons/wrong.png'
 import { capitalizeFirstLetter, isValidString } from "@/utils/UtilityFunctions";
-import { error } from "console";
-
 
 interface Props {
   isModalOpen: boolean,
@@ -114,10 +112,6 @@ export default function UpdateCustomerModal(props: Props) {
       getCustomer()
     }
   }, [props.selectedCustomer])
-
-  useEffect(() => {
-    console.log(addressInfo);
-  }, [addressInfo])
 
   const handleReset = () => {
     if(customer) {
