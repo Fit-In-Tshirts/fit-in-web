@@ -1,5 +1,5 @@
 import { API_BASE_URL, API_ENDPOINTS } from "@/constants/api"
-import { CategoryFilter, Paginator, SortingState } from "@/types/common"
+import { Category, CategoryFilter, Paginator, SortingState } from "@/types/common"
 import { authenticatedFetch } from "@/utils/auth"
 
 export interface RequestState {
@@ -92,13 +92,13 @@ export async function deleteCategory(id:string): Promise<RequestState> {
   }
 }
 
-export async function updateCategory(category:any):Promise<RequestState> {
+export async function updateCategory(category:Category):Promise<RequestState> {
   try {
     const url = `${API_BASE_URL}${API_ENDPOINTS.CATEGORY.UPDATE}`
-
+    
     const response = await authenticatedFetch(url, {
-      method: 'UPDATE',
-      body: JSON.stringify(category)
+      method: 'PATCH',
+      body: JSON.stringify({category})
     });
 
     if (!response.ok) {
@@ -112,7 +112,32 @@ export async function updateCategory(category:any):Promise<RequestState> {
     };
   } catch(error:any) {
     return { 
-      error: error.message || 'Failed to upload category' 
+      error: error.message || 'Failed to update category' 
+    };
+  }
+}
+
+export async function createCategory(category:Category):Promise<RequestState> {
+  try{
+    const url = `${API_BASE_URL}${API_ENDPOINTS.CATEGORY.CREATE}`
+    
+    const response = await authenticatedFetch(url, {
+      method: 'POST',
+      body: JSON.stringify({category})
+    });
+
+    if (!response.ok) {
+      return { 
+        error: response.message || `HTTP ${response.status}: ${response.statusText}` 
+      };
+    }
+
+    return {
+      success: response.message || 'Category created successfully',
+    };
+  } catch(error:any){
+    return { 
+      error: error.message || 'Failed to create category' 
     };
   }
 }

@@ -13,6 +13,7 @@ import { isValidString } from "@/utils/UtilityFunctions";
 import { Button } from "@/components/ui/button";
 import DeleteCategoryModal from "./DeleteCategoryModal";
 import UpdateCategoryModal from "./UpdateCategoryModal";
+import CreateCategoryModal from "./CreateCategoryModal";
 
 const initialFilter:CategoryFilter = {
   name: '',
@@ -39,7 +40,7 @@ export default function CategoryManagement() {
   const [selectedCategory, setSelectedCategory] = useState<Category>()
   const [isDelteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false)
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState<boolean>(false)
-
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false)
 
   const handlePaginationChange = (paginator: Paginator) => {
     setPaginator(paginator);
@@ -52,6 +53,10 @@ export default function CategoryManagement() {
   const deleteCategory = (category:Category) => {
     setSelectedCategory(category)
     setIsDeleteModalOpen(true)
+  }
+
+  const createCategory = () => {
+    setIsCreateModalOpen(true)
   }
 
   const fetchCategoryData = async () => {
@@ -81,10 +86,6 @@ export default function CategoryManagement() {
   const handleReset = () => {
     setFilter(initialFilter)
     setSort(initialSorter)
-  }
-
-  const handleCreate = () => {
-
   }
 
   useEffect(() => {
@@ -187,7 +188,7 @@ export default function CategoryManagement() {
           <Button 
             variant={'outline'} 
             className="w-35 bg-neutral-400 hover:bg-neutral-500"
-            onClick={handleReset}
+            onClick={createCategory}
           >
             Create a category
           </Button>
@@ -225,6 +226,12 @@ export default function CategoryManagement() {
         onOpenChange={() => setIsUpdateModalOpen(false)} 
         refreshFunction={fetchCategoryData}
         selectedCategory={selectedCategory}
+      />
+
+      <CreateCategoryModal 
+        isModalOpen={isCreateModalOpen} 
+        onOpenChange={() => setIsCreateModalOpen(false)} 
+        refreshFunction={fetchCategoryData}
       />
     </div>
   )

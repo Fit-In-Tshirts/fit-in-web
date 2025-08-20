@@ -1,7 +1,7 @@
 import { Category } from "@/types/common";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import toast from "react-hot-toast";
-import { updateCategory } from "./action";
+import { createCategory, updateCategory } from "./action";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Loader2Icon } from "lucide-react";
@@ -13,24 +13,32 @@ import { isValidString } from "@/utils/UtilityFunctions";
 interface Props {
   isModalOpen: boolean,
   onOpenChange: (e:any) => void;
-  selectedCategory?: Category;
   refreshFunction: () => void
 }
 
-export default function UpdateCategoryModal(props:Props) {
+const initialInfo: Category = {
+    id: '',
+    name: '',
+    slug: '',
+    sortOrder: 0,
+  }
+
+export default function CreateCategoryModal(props:Props) {
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [newCategory, setNewCategory] = useState<Category>()
+  const [newCategory, setNewCategory] = useState<Category>(initialInfo)
 
   const handleUpdateCategory = async () => {
     try {
       setIsLoading(true)
-      const response = await updateCategory(newCategory!)
+      const response = await createCategory(newCategory!)
+
+      console.log(response)
 
       if(response.success) {
         toast.success(response.success);
         setTimeout(() => {
           props.refreshFunction();
-          props.onOpenChange(false);
+          handleClose()
         }, 1500);
       }
 
@@ -44,9 +52,6 @@ export default function UpdateCategoryModal(props:Props) {
     }
   }
 
-  const handleReset = () => {
-    setNewCategory(props.selectedCategory);
-  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -61,18 +66,6 @@ export default function UpdateCategoryModal(props:Props) {
     setNewCategory((prev) => prev ? { ...prev, [name]: value } : prev);
   };
 
-  const hasInfoChanged = () => {
-    if(
-      props.selectedCategory?.name != newCategory?.name ||
-      props.selectedCategory?.slug != newCategory?.slug ||
-      props.selectedCategory?.description != newCategory?.description ||
-      props.selectedCategory?.sortOrder != newCategory?.sortOrder
-    ) {
-      return true;
-    }
-    return false;
-  }
-
   const hasValidValues = () => {
     if(
       isValidString(newCategory?.name) &&
@@ -84,17 +77,16 @@ export default function UpdateCategoryModal(props:Props) {
     return false;
   }
 
-  useEffect(() => {
-    if(props.selectedCategory) {
-      setNewCategory(props.selectedCategory)
-    }
-  }, [props.selectedCategory])
+  const handleClose = () => {
+    setNewCategory(initialInfo)
+    props.onOpenChange(false)
+  }
   
   return (
-    <Dialog modal open={props.isModalOpen} onOpenChange={props.onOpenChange}>
+    <Dialog modal open={props.isModalOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Update Category</DialogTitle>
+          <DialogTitle>Create a new category</DialogTitle>
         </DialogHeader>
         <div>
           <div className="flex flex-row gap-3 mb-2">
@@ -105,7 +97,6 @@ export default function UpdateCategoryModal(props:Props) {
                 id="name" 
                 name='name' 
                 required
-                placeholder={props.selectedCategory?.name}
                 value={newCategory?.name}
                 onChange={handleChange} 
               />
@@ -117,7 +108,6 @@ export default function UpdateCategoryModal(props:Props) {
                 id="slug" 
                 name='slug' 
                 required
-                placeholder={props.selectedCategory?.slug}
                 value={newCategory?.slug}
                 onChange={handleChange} 
               />
@@ -150,17 +140,15 @@ export default function UpdateCategoryModal(props:Props) {
             </div>
           </div>
         </div>
+        <DialogDescription />
         <DialogFooter className="flex flex-row items-center justify-start"> 
           <div className="flex flex-row w-full gap-1">
-            <Button disabled={isLoading} size={'sm'} type="button" variant="secondary" className="bg-neutral-400 hover:bg-neutral-500" onClick={props.onOpenChange}>
+            <Button disabled={isLoading} size={'sm'} type="button" variant="secondary" className="bg-neutral-400 hover:bg-neutral-500" onClick={handleClose}>
               Cancel
             </Button>
-            <Button disabled={isLoading || !hasInfoChanged()} size={'sm'} type="button" variant="secondary" className="bg-blue-400 hover:bg-blue-500" onClick={handleReset}>
-              Reset Info
-            </Button>
           </div>
-          <Button disabled={isLoading || !hasInfoChanged() || !hasValidValues()} size={'sm'} type="button" variant="secondary" className="bg-red-400 hover:bg-red-500" onClick={handleUpdateCategory}>
-            {isLoading ? <><Loader2Icon className="animate-spin" />Please wait</> : "Update Category"}
+          <Button disabled={isLoading || !hasValidValues()} size={'sm'} type="button" variant="secondary" className="bg-red-400 hover:bg-red-500" onClick={handleUpdateCategory}>
+            {isLoading ? <><Loader2Icon className="animate-spin" />Please wait</> : "Create Category"}
           </Button>
         </DialogFooter>
       </DialogContent>
