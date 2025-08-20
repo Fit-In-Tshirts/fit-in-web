@@ -1,13 +1,9 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
-import { Switch } from "@/components/ui/switch"
 import { Category, Paginator } from "@/types/common"
 import { ColumnDef } from "@tanstack/react-table"
 import { Trash, Pencil } from "lucide-react"
-import Image from "next/image"
-import Link from "next/link"
 
 type ColumnProps = {
   onEdit?: (category: Category) => void
@@ -41,35 +37,9 @@ export const getCategoryColumns = ({
     header: "Description",
   },
   {
-    accessorKey: "isActive",
-    id: "active",
-    header: "Active",
-    cell: ({row}) => {
-      return <div className="flex justify-center items-center">
-        <Switch checked={row.original.isActive} />
-      </div>
-    }
-  },
-  {
     accessorKey: "sortOrder",
     id: "sortOrder",
     header: "Sort Order",
-  },
-  {
-    accessorKey: "imageUrl",
-    id: "imageUrl",
-    header: "Image Url",
-    cell: ({row}) => {
-      return <div className="flex justify-center items-center">
-        <HoverCard>
-          <HoverCardTrigger><Button variant="link">Link</Button></HoverCardTrigger>
-          <HoverCardContent className="flex flex-col">
-            <div>{row.original.imageUrl}</div>
-            <Image src={row.original.imageUrl ? row.original.imageUrl.toString() : ""} alt={""} width={200} height={200} />
-          </HoverCardContent>
-        </HoverCard>
-      </div>
-    }
   },
   {
     accessorKey: "id",

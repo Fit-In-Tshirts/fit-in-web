@@ -18,9 +18,6 @@ export async function getCategories(filter:CategoryFilter, sort:SortingState, pa
     if (filter.slug && filter.slug.trim() !== '') {
       queryParams.append('slug', filter.slug.trim());
     }
-    if (filter.activeFilterEnabled) {
-      queryParams.append('isActive', filter.isActive.toString());
-    }
     if (sort.column) {
       queryParams.append('sortColumn', sort.column.toString());
     }

@@ -126,22 +126,6 @@ export default function UpdateCategoryModal(props:Props) {
                 onChange={handleChange} 
               />
             </div>
-            <div className='flex w-35 flex-row items-center justify-center gap-2 rounded-lg border p-1 shadow-sm'>
-              <div className="space-y-0.5">
-                <Label>Is Active ?</Label>
-              </div>
-              <div>
-                <Switch
-                  checked={newCategory?.isActive ?? false}
-                  onCheckedChange={(checked) => {
-                    setNewCategory((prev) => {
-                      if (!prev) return undefined;
-                      return { ...prev, isActive: checked };
-                    });
-                  }}
-                />
-              </div>
-            </div>
           </div>
         </div>
         <DialogFooter className="flex flex-row items-center justify-start"> 

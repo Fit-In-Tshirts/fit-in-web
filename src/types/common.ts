@@ -124,14 +124,10 @@ export interface Category {
   name: string,
   slug: string,
   description?: string,
-  imageUrl?:string,
-  isActive:boolean,
   sortOrder: number
 }
 
 export interface CategoryFilter {
   name: string,
   slug: string,
-  activeFilterEnabled: boolean,
-  isActive: boolean
 }

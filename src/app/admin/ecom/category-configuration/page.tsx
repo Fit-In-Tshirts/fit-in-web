@@ -1,27 +1,22 @@
 'use client'
 
 import TableWithPagination, { TableWithPaginationRef } from "@/components/table/Table";
-import { Category, CategoryFilter, Paginator, SelectedCategoryInfo, SortingState, SortOrder } from "@/types/common";
+import { Category, CategoryFilter, Paginator, SortingState, SortOrder } from "@/types/common";
 import { useEffect, useRef, useState } from "react";
 import { getCategoryColumns } from "./columns";
 import toast from "react-hot-toast";
 import { getCategories } from "./action";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { isValidString } from "@/utils/UtilityFunctions";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import DeleteCustomerModal from "../../overall/customer-management/DeleteCustomerModal";
 import DeleteCategoryModal from "./DeleteCategoryModal";
 import UpdateCategoryModal from "./UpdateCategoryModal";
 
 const initialFilter:CategoryFilter = {
   name: '',
   slug: '',
-  activeFilterEnabled: false,
-  isActive: false,
 }
 
 const initialSorter: SortingState = {
@@ -171,19 +166,6 @@ export default function CategoryManagement() {
                   </SelectGroup>
                 </SelectContent>
               </Select>
-            </div>
-          </div>
-          
-          <div className="flex w-40 flex-row items-center justify-center gap-2 rounded-lg border p-1 shadow-sm">
-            <Checkbox checked={filter.activeFilterEnabled} onCheckedChange={(checked) => setFilter((prev) => ({...prev, activeFilterEnabled: checked === true}))} className="border border-neutral-900" />
-            <div className="space-y-0.5">
-              <Label className={filter.activeFilterEnabled ? "" : "text-neutral-500 font-light"}>Is Active ?</Label>
-            </div>
-            <div>
-              <Switch disabled={!filter.activeFilterEnabled}
-                checked={filter.isActive}
-                onCheckedChange={(checked) => {setFilter({...filter, isActive:checked})}}
-              />
             </div>
           </div>
         </div>
