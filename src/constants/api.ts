@@ -16,6 +16,8 @@ export const API_ENDPOINTS = {
     UPDATE: '/customer/update'
   },
   CATEGORY: {
-    GET_ALL: '/category/getall'
+    GET_ALL: '/category/getall',
+    DELETE_BY_ID: '/category/delete_by_id',
+    UPDATE: '/category/update',
   }
 }

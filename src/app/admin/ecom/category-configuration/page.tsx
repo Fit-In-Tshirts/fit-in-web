@@ -13,6 +13,9 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { isValidString } from "@/utils/UtilityFunctions";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
+import DeleteCustomerModal from "../../overall/customer-management/DeleteCustomerModal";
+import DeleteCategoryModal from "./DeleteCategoryModal";
+import UpdateCategoryModal from "./UpdateCategoryModal";
 
 const initialFilter:CategoryFilter = {
   name: '',
@@ -38,16 +41,22 @@ export default function CategoryManagement() {
   })
   const [filter, setFilter] = useState<CategoryFilter>(initialFilter)
   const [sort, setSort] = useState<SortingState>(initialSorter)
+  const [selectedCategory, setSelectedCategory] = useState<Category>()
+  const [isDelteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false)
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState<boolean>(false)
+
 
   const handlePaginationChange = (paginator: Paginator) => {
     setPaginator(paginator);
   };
 
-  const updateCategory = (category:SelectedCategoryInfo) => {
-    console.log(category.id)
+  const updateCategory = (category:Category) => {
+    setSelectedCategory(category)
+    setIsUpdateModalOpen(true)
   }
-  const deleteCategory = (category:SelectedCategoryInfo) => {
-    console.log(category.id)
+  const deleteCategory = (category:Category) => {
+    setSelectedCategory(category)
+    setIsDeleteModalOpen(true)
   }
 
   const fetchCategoryData = async () => {
@@ -77,6 +86,10 @@ export default function CategoryManagement() {
   const handleReset = () => {
     setFilter(initialFilter)
     setSort(initialSorter)
+  }
+
+  const handleCreate = () => {
+
   }
 
   useEffect(() => {
@@ -174,20 +187,27 @@ export default function CategoryManagement() {
             </div>
           </div>
         </div>
-        <div className="flex flex-row gap-2">
+        <div className="flex flex-row gap-2 mt-2">
           <Button 
             variant={'outline'} 
             className="w-25 bg-green-400 hover:bg-green-500"
             onClick={handleSearch}
-            >
-              Search
-            </Button>
+          >
+            Search
+          </Button>
           <Button 
             variant={'outline'} 
             className="w-25 bg-red-400 hover:bg-red-500"
             onClick={handleReset}
           >
             Reset Filters
+          </Button>
+          <Button 
+            variant={'outline'} 
+            className="w-35 bg-neutral-400 hover:bg-neutral-500"
+            onClick={handleReset}
+          >
+            Create a category
           </Button>
         </div>
       </div>
@@ -210,7 +230,20 @@ export default function CategoryManagement() {
         initialPageSize={10}
         onPaginationChange={handlePaginationChange}
       />
+
+      <DeleteCategoryModal 
+        isModalOpen={isDelteModalOpen} 
+        onOpenChange={() => setIsDeleteModalOpen(false)} 
+        refreshFunction={fetchCategoryData}
+        selectedCategory={selectedCategory}
+      />
+
+      <UpdateCategoryModal 
+        isModalOpen={isUpdateModalOpen} 
+        onOpenChange={() => setIsUpdateModalOpen(false)} 
+        refreshFunction={fetchCategoryData}
+        selectedCategory={selectedCategory}
+      />
     </div>
-    
   )
 }

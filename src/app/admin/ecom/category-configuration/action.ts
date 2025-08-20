@@ -8,7 +8,7 @@ export interface RequestState {
   data?: any
 }
 
-export async function getCategories(filter:CategoryFilter, sort:SortingState, paginator: Paginator){
+export async function getCategories(filter:CategoryFilter, sort:SortingState, paginator: Paginator): Promise<RequestState>{
   try {
     const queryParams = new URLSearchParams();
     
@@ -66,6 +66,56 @@ export async function getCategories(filter:CategoryFilter, sort:SortingState, pa
   } catch(error:any){
     return { 
       error: error.message || 'Failed to load categories' 
+    };
+  }
+}
+
+export async function deleteCategory(id:string): Promise<RequestState> {
+  try {
+    const url = `${API_BASE_URL}${API_ENDPOINTS.CATEGORY.DELETE_BY_ID}`
+
+    const response = await authenticatedFetch(url, {
+      method: 'DELETE',
+      body: JSON.stringify({id:id})
+    });
+
+    if (!response.ok) {
+      return { 
+        error: response.message || `HTTP ${response.status}: ${response.statusText}` 
+      };
+    }
+
+    return {
+      success: response.message || 'Category deleted successfully',
+    };
+  } catch(error:any) {
+    return { 
+      error: error.message || 'Failed to delete category' 
+    };
+  }
+}
+
+export async function updateCategory(category:any):Promise<RequestState> {
+  try {
+    const url = `${API_BASE_URL}${API_ENDPOINTS.CATEGORY.UPDATE}`
+
+    const response = await authenticatedFetch(url, {
+      method: 'UPDATE',
+      body: JSON.stringify(category)
+    });
+
+    if (!response.ok) {
+      return { 
+        error: response.message || `HTTP ${response.status}: ${response.statusText}` 
+      };
+    }
+
+    return {
+      success: response.message || 'Category updated successfully',
+    };
+  } catch(error:any) {
+    return { 
+      error: error.message || 'Failed to upload category' 
     };
   }
 }
