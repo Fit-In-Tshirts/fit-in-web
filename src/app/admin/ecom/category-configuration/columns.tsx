@@ -1,9 +1,13 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Customer, Paginator, SelectedCategoryInfo } from "@/types/common"
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
+import { Switch } from "@/components/ui/switch"
+import { Category, Paginator, SelectedCategoryInfo } from "@/types/common"
 import { ColumnDef } from "@tanstack/react-table"
 import { Trash, Pencil } from "lucide-react"
+import Image from "next/image"
+import Link from "next/link"
 
 type ColumnProps = {
   onEdit?: (category: SelectedCategoryInfo) => void
@@ -15,7 +19,7 @@ export const getCategoryColumns = ({
   onEdit,
   onDelete,
   paginator
-}: ColumnProps): ColumnDef<Customer>[] => [
+}: ColumnProps): ColumnDef<Category>[] => [
   {
     id: "index",
     header: "No.",
@@ -40,6 +44,11 @@ export const getCategoryColumns = ({
     accessorKey: "isActive",
     id: "active",
     header: "Active",
+    cell: ({row}) => {
+      return <div className="flex justify-center items-center">
+        <Switch checked={row.original.isActive} />
+      </div>
+    }
   },
   {
     accessorKey: "sortOrder",
@@ -52,18 +61,26 @@ export const getCategoryColumns = ({
     header: "Image Url",
     cell: ({row}) => {
       return <div className="flex justify-center items-center">
-        <Button variant={'link'}> Link </Button>
+        <HoverCard>
+          <HoverCardTrigger><Button variant="link">Link</Button></HoverCardTrigger>
+          <HoverCardContent className="flex flex-col">
+            <div>{row.original.imageUrl}</div>
+            <Image src={row.original.imageUrl ? row.original.imageUrl.toString() : ""} alt={""} width={200} height={200} />
+          </HoverCardContent>
+        </HoverCard>
       </div>
     }
   },
   {
     accessorKey: "id",
     id: "actions",
-    header: "Actions",
+    header: () => {
+      return <div className="flex flex-row justify-center items-center">Actions</div>
+    },
     cell: ({ row }) => {
       const category:SelectedCategoryInfo = {
         id: row.original.id,
-        name: row.original.firstName,
+        name: row.original.name,
       }
       return (
         <div className="flex flex-row gap-2 justify-center items-center">

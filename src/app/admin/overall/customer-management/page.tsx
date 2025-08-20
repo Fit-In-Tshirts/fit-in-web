@@ -26,8 +26,8 @@ const initialFilter: CustomerFilter = {
 }
 
 const initialSorting: SortingState = {
-  column: null,
-  order: null,
+  column: undefined,
+  order: undefined,
 }
 
 export default function CustomerManagement() {
@@ -222,7 +222,7 @@ export default function CustomerManagement() {
               <Label htmlFor="sortColumn" className="w-20">Sort By</Label>
               <Select 
                 name="sortColumn" 
-                onValueChange={(value) => setSort((prev) => ({column: value, order: prev?.order ?? null}))} 
+                onValueChange={(value) => setSort((prev) => ({column: value, order: prev?.order ?? undefined}))} 
                 value={sort?.column ?? ""}
               >
                 <SelectTrigger id="sortColumn" className="w-40">

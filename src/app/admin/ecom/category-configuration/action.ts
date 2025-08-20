@@ -1,5 +1,5 @@
 import { API_BASE_URL, API_ENDPOINTS } from "@/constants/api"
-import { Paginator } from "@/types/common"
+import { CategoryFilter, Paginator, SortingState } from "@/types/common"
 import { authenticatedFetch } from "@/utils/auth"
 
 export interface RequestState {
@@ -8,10 +8,25 @@ export interface RequestState {
   data?: any
 }
 
-export async function getCategories(paginator: Paginator){
+export async function getCategories(filter:CategoryFilter, sort:SortingState, paginator: Paginator){
   try {
     const queryParams = new URLSearchParams();
-
+    
+    if (filter.name && filter.name.trim() !== '') {
+      queryParams.append('name', filter.name.trim());
+    }
+    if (filter.slug && filter.slug.trim() !== '') {
+      queryParams.append('slug', filter.slug.trim());
+    }
+    if (filter.activeFilterEnabled) {
+      queryParams.append('isActive', filter.isActive.toString());
+    }
+    if (sort.column) {
+      queryParams.append('sortColumn', sort.column.toString());
+    }
+    if (sort.order) {
+      queryParams.append('sortOrder', sort.order.toString());
+    }
     if (paginator.pageSize !== undefined) {
       queryParams.append('pageSize', paginator.pageSize.toString());
     }

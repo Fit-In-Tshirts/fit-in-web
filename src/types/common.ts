@@ -70,10 +70,10 @@ export interface Paginator {
   totalRecords: number,      // total items from server
 }
 
-export type SortOrder = 'asc' | 'desc' | null;
+export type SortOrder = 'asc' | 'desc' | undefined;
 
 export interface SortingState {
-  column: string | null;
+  column: string | undefined;
   order: SortOrder;
 }
 
@@ -127,4 +127,11 @@ export interface Category {
   imageUrl?:string,
   isActive:boolean,
   sortOrder: number
+}
+
+export interface CategoryFilter {
+  name: string,
+  slug: string,
+  activeFilterEnabled: boolean,
+  isActive: boolean
 }
