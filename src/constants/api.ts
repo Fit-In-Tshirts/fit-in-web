@@ -6,12 +6,19 @@ export const API_ENDPOINTS = {
     SIGNUP: '/auth/signup',
     // LOGOUT: '/auth/logout',
   },
-  // USERS: {
-  //   GET_ALL: '/users',
-  //   GET_BY_ID: (id: string) => `/users/${id}`,
-  // },
-  // PRODUCTS: {
-  //   GET_ALL: '/products',
-  //   GET_BY_ID: (id: string) => `/products/${id}`,
-  // },
+  USER: {
+    GET_ALL: '/user/getall',
+  },
+  CUSTOMER: {
+    GET_ALL: '/customer/getall',
+    GET_BY_ID: '/customer/get_by_id',
+    DELETE_BY_ID: '/customer/delete_by_id',
+    UPDATE: '/customer/update'
+  },
+  CATEGORY: {
+    GET_ALL: '/category/getall',
+    DELETE_BY_ID: '/category/delete_by_id',
+    UPDATE: '/category/update',
+    CREATE: '/category/create',
+  }
 }

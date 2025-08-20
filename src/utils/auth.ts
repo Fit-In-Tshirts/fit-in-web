@@ -32,13 +32,23 @@ export async function authenticatedFetch(url: string, options: RequestInit = {})
     redirect('/signin');
   }
 
-  return fetch(url, {
+  const response = await fetch(url, {
     ...options,
     headers: {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json',
     }
-  })
+  });
+
+  const responseData = await response.json();
+
+  return {
+    ok: response.ok,
+    status: response.status,
+    statusText: response.statusText,
+    message: responseData.message,
+    data: responseData.data,
+  };
 }
 
 //logout function

@@ -42,8 +42,8 @@ export default function SignupPage() {
     confirmPassword: '',
     address: {
       houseNumber: '',
-      addressLine_1: '',
-      addressLine_2: '',
+      addressLine1: '',
+      addressLine2: '',
       city: '',
       province: '',
       zipcode: ''
@@ -96,8 +96,8 @@ export default function SignupPage() {
       formData.password.trim() !== '' &&
       formData.password.trim() == formData.confirmPassword.trim() &&
       formData.address.houseNumber.trim() !== '' &&
-      formData.address.addressLine_1.trim() !== '' &&
-      formData.address.addressLine_2.trim() !== '' &&
+      formData.address.addressLine1.trim() !== '' &&
+      formData.address.addressLine2.trim() !== '' &&
       formData.address.city.trim() !== '' &&
       formData.address.province.trim() !== '' &&
       formData.phoneNumber_mobile.trim() !== '' &&
@@ -146,10 +146,6 @@ export default function SignupPage() {
       }, 1500)
     }
   }, [state, router])
-
-  useEffect(() => {
-    console.log(formData);
-  }, [formData])
 
   return (
     <div className='flex-col box-border py-10 bg-neutral-200 min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center p-4'>
@@ -288,7 +284,7 @@ export default function SignupPage() {
                 type="text" 
                 id="houseNumber" 
                 name='houseNumber' 
-                placeholder="235" 
+                placeholder="235/2" 
                 required
                 value={formData.address.houseNumber}
                 onChange={handleAddressChange}
@@ -299,11 +295,11 @@ export default function SignupPage() {
               <p className='border rounded-md p-1 w-17 bg-neutral-50'>Line 1</p>
               <Input 
                 type="text" 
-                id="addressLine_1" 
-                name='addressLine_1' 
-                placeholder="york Street" 
+                id="addressLine1" 
+                name='addressLine1' 
+                placeholder="York Street" 
                 required
-                value={formData.address.addressLine_1}
+                value={formData.address.addressLine1}
                 onChange={handleAddressChange}
                 autoComplete='shipping address-line2'
               />
@@ -312,11 +308,11 @@ export default function SignupPage() {
               <p className='border rounded-md p-1 w-17 bg-neutral-50'>Line 2</p>
               <Input 
                 type="text" 
-                id="addressLine_2" 
-                name='addressLine_2' 
-                placeholder="Colombo 5" 
+                id="addressLine2" 
+                name='addressLine2' 
+                placeholder="Colombo 1" 
                 required
-                value={formData.address.addressLine_2}
+                value={formData.address.addressLine2}
                 onChange={handleAddressChange}
                 autoComplete='shipping address-line3'
               />
