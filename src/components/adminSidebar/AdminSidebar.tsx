@@ -14,7 +14,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { 
-  Columns3Cog, ListCheck, LucideIcon, PackageCheck, PackagePlus, PaintBucket, StretchHorizontal, TrendingUp, UserRoundPen 
+  Columns3Cog, ListCheck, LucideIcon, PackageCheck, PackagePlus, PaintBucket, SplinePointer, StretchHorizontal, TrendingUp, UserRoundPen 
 } from "lucide-react";
 import finderprintIcon from '../../icons/fingerprint.svg';
 import { useAdminStore } from '../../stores/useAdminStore';
@@ -38,6 +38,7 @@ export function AdminSidebar() {
 
   const ecom:SidebarMenuItem[] = [
     { title: "Category Configuration", url: "/admin/ecom/category-configuration", icon: Columns3Cog },
+    { title: "Design Configuration", url: "/admin/ecom/design-configuration", icon: SplinePointer  },
     { title: "Product Management", url: "/admin/ecom/product-management", icon: StretchHorizontal },
     { title: "Inventory", url: "/admin/ecom/completed-orders", icon: ListCheck },
     { title: "Orders", url: "/admin/ecom/item-management", icon: PackagePlus },
