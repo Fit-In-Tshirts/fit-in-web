@@ -131,3 +131,20 @@ export interface CategoryFilter {
   name: string,
   slug: string,
 }
+
+export interface Design {
+  id: string,
+  name: string,
+  slug: string,
+  description?: string,
+}
+
+export interface DesignFilter {
+  name: string,
+  slug: string,
+}
+
+export interface SelectedDesignInfo {
+  id:string,
+  name:string
+}
