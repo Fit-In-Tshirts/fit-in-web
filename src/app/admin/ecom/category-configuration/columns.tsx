@@ -37,6 +37,11 @@ export const getCategoryColumns = ({
     header: "Description",
   },
   {
+    accessorKey: "sizeGuide",
+    id: "sizeGuide",
+    header: "Size Guide",
+  },
+  {
     accessorKey: "sortOrder",
     id: "sortOrder",
     header: "Sort Order",
