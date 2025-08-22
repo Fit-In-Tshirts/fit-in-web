@@ -266,14 +266,14 @@ export default function CustomerManagement() {
           
           <Button 
             variant={'outline'} 
-            className="w-25 bg-green-400 hover:bg-green-500" 
+            className="w-25 bg-blue-500 hover:bg-blue-600 text-white" 
             onClick={handleFilterSearch}
           >
             Search
           </Button>
           <Button 
             variant={'outline'} 
-            className="w-25 bg-red-400 hover:bg-red-500" 
+            className="w-25 bg-amber-500 hover:bg-amber-600 text-white" 
             onClick={handleReset}
           >
             Reset Filters

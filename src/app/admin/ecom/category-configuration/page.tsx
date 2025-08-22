@@ -173,21 +173,21 @@ export default function CategoryManagement() {
         <div className="flex flex-row gap-2 mt-2">
           <Button 
             variant={'outline'} 
-            className="w-25 bg-green-400 hover:bg-green-500"
+            className="w-25 bg-blue-500 hover:bg-blue-600 text-white"
             onClick={handleSearch}
           >
             Search
           </Button>
           <Button 
             variant={'outline'} 
-            className="w-25 bg-red-400 hover:bg-red-500"
+            className="w-25 bg-amber-500 hover:bg-amber-600 text-white"
             onClick={handleReset}
           >
             Reset Filters
           </Button>
           <Button 
             variant={'outline'} 
-            className="w-35 bg-neutral-400 hover:bg-neutral-500"
+            className="w-35 bg-green-600 hover:bg-green-700 text-white"
             onClick={createCategory}
           >
             Create a category

@@ -1,3 +1,4 @@
+import { supabaseStroage } from "@/lib/supabaseStorage";
 import { Paginator } from "@/types/common";
 
 export function getTotalPages(paginator: Paginator): number {

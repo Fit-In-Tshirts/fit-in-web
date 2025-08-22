@@ -1,5 +1,5 @@
 import { Category } from "@/types/common";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { createCategory, updateCategory } from "./action";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -9,6 +9,8 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { isValidString } from "@/utils/UtilityFunctions";
+import { supabaseStroage } from "@/lib/supabaseStorage";
+import { Buckets } from "@/constants/Buckets";
 
 interface Props {
   isModalOpen: boolean,
@@ -26,13 +28,14 @@ const initialInfo: Category = {
 export default function CreateCategoryModal(props:Props) {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [newCategory, setNewCategory] = useState<Category>(initialInfo)
+  const [file, setFile] = useState<File|null>(null);
 
-  const handleUpdateCategory = async () => {
+  const handleCreateCategory = async () => {
     try {
       setIsLoading(true)
-      const response = await createCategory(newCategory!)
+      const uploadedUrl = await handleUploadImage();
 
-      console.log(response)
+      const response = await createCategory({...newCategory!, sizeGuide: uploadedUrl});
 
       if(response.success) {
         toast.success(response.success);
@@ -51,6 +54,35 @@ export default function CreateCategoryModal(props:Props) {
       setIsLoading(false)
     }
   }
+
+  const handleUploadImage = async () => {
+    if(!file) {
+      return;
+    }
+
+    const filePath = `${newCategory.name}-${Date.now()}`;
+    const {data, error} = await supabaseStroage.storage
+      .from(Buckets.SIZE_GUIDES)
+      .upload(filePath, file);
+
+    if(error) {
+      toast.error("Size guide upload failed");
+      return;
+    }
+
+    const { data:publicUrlData } = supabaseStroage.storage
+      .from(Buckets.SIZE_GUIDES)
+      .getPublicUrl(filePath);
+
+    return publicUrlData.publicUrl
+  }
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selected = e.target.files?.[0];
+    if (selected) {
+      setFile(selected);
+    }
+  };
 
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -124,7 +156,16 @@ export default function CreateCategoryModal(props:Props) {
             />
           </div>
           <div className="flex flex-row gap-3 items-center justify-start">
-            <div className='flex flex-row gap-2 items-center justify-center'>
+            <div className='flex flex-col gap-2 items-start justify-center'>
+              <Label htmlFor="sizeGuide" className="w-18">Size Guide</Label>
+              <Input 
+                type="file" 
+                id="sizeGuide" 
+                name='sizeGuide' 
+                onChange={handleFileChange} 
+              />
+            </div>
+            <div className='flex flex-col gap-2 items-start justify-center'>
               <Label htmlFor="sortOrder" className="w-18">Sort Order</Label>
               <Input 
                 type="number" 
@@ -147,7 +188,7 @@ export default function CreateCategoryModal(props:Props) {
               Cancel
             </Button>
           </div>
-          <Button disabled={isLoading || !hasValidValues()} size={'sm'} type="button" variant="secondary" className="bg-red-400 hover:bg-red-500" onClick={handleUpdateCategory}>
+          <Button disabled={isLoading || !hasValidValues()} size={'sm'} type="button" variant="secondary" className="bg-red-400 hover:bg-red-500" onClick={handleCreateCategory}>
             {isLoading ? <><Loader2Icon className="animate-spin" />Please wait</> : "Create Category"}
           </Button>
         </DialogFooter>

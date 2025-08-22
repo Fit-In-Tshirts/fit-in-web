@@ -92,13 +92,13 @@ export async function deleteCategory(id:string): Promise<RequestState> {
   }
 }
 
-export async function updateCategory(category:Category):Promise<RequestState> {
+export async function updateCategory(categoryData:Category):Promise<RequestState> {
   try {
     const url = `${API_BASE_URL}${API_ENDPOINTS.CATEGORY.UPDATE}`
     
     const response = await authenticatedFetch(url, {
       method: 'PATCH',
-      body: JSON.stringify({category})
+      body: JSON.stringify({categoryData})
     });
 
     if (!response.ok) {
@@ -117,13 +117,15 @@ export async function updateCategory(category:Category):Promise<RequestState> {
   }
 }
 
-export async function createCategory(category:Category):Promise<RequestState> {
+export async function createCategory(categoryData:Category):Promise<RequestState> {
   try{
     const url = `${API_BASE_URL}${API_ENDPOINTS.CATEGORY.CREATE}`
+
+    console.log(categoryData)
     
     const response = await authenticatedFetch(url, {
       method: 'POST',
-      body: JSON.stringify({category})
+      body: JSON.stringify({categoryData})
     });
 
     if (!response.ok) {

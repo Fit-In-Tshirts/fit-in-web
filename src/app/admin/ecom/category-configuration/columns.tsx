@@ -1,9 +1,12 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
 import { Category, Paginator } from "@/types/common"
 import { ColumnDef } from "@tanstack/react-table"
-import { Trash, Pencil } from "lucide-react"
+import { Trash, Pencil, CircleArrowRight } from "lucide-react"
+import Image from "next/image"
+import Link from "next/link"
 
 type ColumnProps = {
   onEdit?: (category: Category) => void
@@ -37,14 +40,24 @@ export const getCategoryColumns = ({
     header: "Description",
   },
   {
-    accessorKey: "sizeGuide",
-    id: "sizeGuide",
-    header: "Size Guide",
-  },
-  {
     accessorKey: "sortOrder",
     id: "sortOrder",
     header: "Sort Order",
+  },
+  {
+    accessorKey: "sizeGuide",
+    id: "sizeGuide",
+    header: () => {return <div className="text-center">Size Guide</div>},
+    cell: ({row}) => {
+      return row.original.sizeGuide ? <HoverCard>
+        <HoverCardTrigger asChild className="flex flex-row justify-center items-center">
+          <Button variant="link" className="text-center">Image</Button>
+        </HoverCardTrigger>
+        <HoverCardContent className="w-30 flex flex-row justify-center items-center">
+          <Link target="_blank" href={row.original.sizeGuide} className="flex flex-row justify-center items-center gap-1 font-medium"> <CircleArrowRight width={18} height={18} /> Link</Link>
+        </HoverCardContent>
+      </HoverCard> : (<p className="text-center"> - </p>)
+    }
   },
   {
     accessorKey: "id",

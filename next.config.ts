@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ["picsum.photos"], // allow loading images from picsum.photos
+    domains: ["fzciujyyzvcseoubuejv.supabase.co"], // allow loading images from picsum.photos
   },
 };
 

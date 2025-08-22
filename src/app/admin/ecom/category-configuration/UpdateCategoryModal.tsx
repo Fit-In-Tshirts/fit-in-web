@@ -1,7 +1,7 @@
 import { Category } from "@/types/common";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { updateCategory } from "./action";
+import { RequestState, updateCategory } from "./action";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Loader2Icon } from "lucide-react";
@@ -9,6 +9,8 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { isValidString } from "@/utils/UtilityFunctions";
+import { supabaseStroage } from "@/lib/supabaseStorage";
+import { Buckets } from "@/constants/Buckets";
 
 interface Props {
   isModalOpen: boolean,
@@ -20,11 +22,15 @@ interface Props {
 export default function UpdateCategoryModal(props:Props) {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [newCategory, setNewCategory] = useState<Category>()
+  const [file, setFile] = useState<File|null>(null);
 
   const handleUpdateCategory = async () => {
     try {
       setIsLoading(true)
-      const response = await updateCategory(newCategory!)
+
+      const uploadedUrl = await handleUploadImage();
+
+      const response = await updateCategory({...newCategory!, sizeGuide: uploadedUrl})
 
       if(response.success) {
         toast.success(response.success);
@@ -44,8 +50,39 @@ export default function UpdateCategoryModal(props:Props) {
     }
   }
 
+  const handleUploadImage = async () => {
+    if(!file) {
+      return;
+    }
+
+    const filePath = `${newCategory!.name}-${Date.now()}`;
+    const {data, error} = await supabaseStroage.storage
+      .from(Buckets.SIZE_GUIDES)
+      .upload(filePath, file);
+
+    if(error) {
+      toast.error("Size guide upload failed");
+      return props.selectedCategory?.sizeGuide;
+    }
+
+    const { data:publicUrlData } = supabaseStroage.storage
+      .from(Buckets.SIZE_GUIDES)
+      .getPublicUrl(filePath);
+
+    return publicUrlData.publicUrl
+  }
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selected = e.target.files?.[0];
+    if (selected) {
+      setFile(selected);
+    }
+  };
+
+
   const handleReset = () => {
     setNewCategory(props.selectedCategory);
+    setFile(null)
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -66,12 +103,17 @@ export default function UpdateCategoryModal(props:Props) {
       props.selectedCategory?.name != newCategory?.name ||
       props.selectedCategory?.slug != newCategory?.slug ||
       props.selectedCategory?.description != newCategory?.description ||
-      props.selectedCategory?.sortOrder != newCategory?.sortOrder
+      props.selectedCategory?.sortOrder != newCategory?.sortOrder || file !== null
+      
     ) {
       return true;
     }
     return false;
   }
+
+  useEffect(() => {
+    console.log(file)
+  }, [file])
 
   const hasValidValues = () => {
     if(
@@ -134,7 +176,19 @@ export default function UpdateCategoryModal(props:Props) {
             />
           </div>
           <div className="flex flex-row gap-3 items-center justify-start">
-            <div className='flex flex-row gap-2 items-center justify-center'>
+            <div className="flex flex-row gap-3 items-center justify-start">
+            <div className='flex flex-col gap-2 items-start justify-center'>
+              <Label htmlFor="sizeGuide" className="w-18">Size Guide</Label>
+              <Input 
+                type="file" 
+                id="sizeGuide" 
+                name='sizeGuide' 
+                onChange={handleFileChange}
+                accept=".png, .jpg, .jpeg"
+                
+              />
+            </div>
+            <div className='flex flex-col gap-2 items-start justify-center'>
               <Label htmlFor="sortOrder" className="w-18">Sort Order</Label>
               <Input 
                 type="number" 
@@ -148,6 +202,7 @@ export default function UpdateCategoryModal(props:Props) {
                 onChange={handleChange} 
               />
             </div>
+          </div>
           </div>
         </div>
         <DialogFooter className="flex flex-row items-center justify-start"> 
