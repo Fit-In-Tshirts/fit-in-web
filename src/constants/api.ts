@@ -26,5 +26,9 @@ export const API_ENDPOINTS = {
     DELETE_BY_ID: '/design/delete_by_id',
     UPDATE: '/design/update',
     CREATE: '/design/create',
+  },
+  PRODUCT: {
+    GET_ALL: '/product/getall',
+    DELETE: '/product/delete',
   }
 }

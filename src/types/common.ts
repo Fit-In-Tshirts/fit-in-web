@@ -149,3 +149,64 @@ export interface SelectedDesignInfo {
   id:string,
   name:string
 }
+
+export enum ProductStatus {
+  DRAFT, // not ready for customers/seasonal products/under review
+  ACTIVE, // products available for customers, available in inventory
+  DISCONTINUED // end of line products
+}
+
+export interface Product {
+  id: string,
+  name: string,
+  slug: string,
+  description?:string,
+  brand?:string,
+  material?:string,
+  careInstructions?:string,
+  basePrice:number,
+  discountPercentage?:number,
+  mainColor: Color,
+  mainColorId:string,
+  isFeatured?:boolean
+  status:ProductStatus,
+
+  category:Category,
+
+  productColors: {
+    id:string,
+    colorId:string,
+    isMainColor:boolean,
+    color: Color
+  }[],
+  productDesigns: {
+    id:string,
+    designId:string,
+    design:Design,
+  }[],
+  productSizes: {
+    id:string,
+    sizeId:string,
+    size:Size
+  }[],
+  productImages: {
+    id:string,
+    imageUrl: string,
+    isPrimary:boolean,
+    sortOrder:number
+  }[],
+}
+
+export interface Color {
+  id:string,
+  name:string,
+  hexCode?:string,
+  rgbCode?:string,
+}
+
+export interface Size {
+  id:string,
+  name:string,
+  description:string,
+  sortOrder: number,
+}

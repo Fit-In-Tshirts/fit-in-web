@@ -26,29 +26,35 @@ export async function getUserData() {
 
 //for making authenticated API calls
 export async function authenticatedFetch(url: string, options: RequestInit = {}) {
-  const token = await getAuthToken();
+  try {
+    const token = await getAuthToken();
 
-  if(!token) {
-    redirect('/signin');
-  }
-
-  const response = await fetch(url, {
-    ...options,
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json',
+    if(!token) {
+      redirect('/signin');
     }
-  });
 
-  const responseData = await response.json();
+    const response = await fetch(url, {
+      ...options,
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      }
+    });
 
-  return {
-    ok: response.ok,
-    status: response.status,
-    statusText: response.statusText,
-    message: responseData.message,
-    data: responseData.data,
-  };
+    const responseData = await response.json();
+
+    return {
+      ok: response.ok,
+      status: response.status,
+      statusText: response.statusText,
+      message: responseData.message,
+      data: responseData.data,
+    };
+  } catch(error:any) {
+    return {
+      message: error.message,
+    };
+  }
 }
 
 //logout function
