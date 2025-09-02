@@ -30,7 +30,14 @@ export async function authenticatedFetch(url: string, options: RequestInit = {})
     const token = await getAuthToken();
 
     if(!token) {
-      redirect('/signin');
+      return {
+        ok: false,
+        status: 401,
+        statusText: 'Unauthorized',
+        message: 'No authentication token found',
+        data: null,
+        requiresAuth: true // Flag to indicate authentication is required
+      };
     }
 
     const response = await fetch(url, {
@@ -41,7 +48,25 @@ export async function authenticatedFetch(url: string, options: RequestInit = {})
       }
     });
 
-    const responseData = await response.json();
+    let responseData;
+    const contentType = response.headers.get('content-type');
+    
+    if (contentType && contentType.includes('application/json')) {
+      responseData = await response.json();
+    } else {
+      responseData = await response.text();
+    }
+
+    if (response.status === 401) {
+      return {
+        ok: false,
+        status: 401,
+        statusText: 'Unauthorized',
+        message: 'Authentication failed',
+        data: null,
+        requiresAuth: true
+      };
+    }
 
     return {
       ok: response.ok,
@@ -49,10 +74,17 @@ export async function authenticatedFetch(url: string, options: RequestInit = {})
       statusText: response.statusText,
       message: responseData.message,
       data: responseData.data,
+      requiresAuth: false
     };
   } catch(error:any) {
+    console.error('authenticatedFetch error:', error);
     return {
-      message: error.message,
+      ok: false,
+      status: 0,
+      statusText: 'Network Error',
+      message: error.message || 'An unexpected error occurred',
+      data: null,
+      requiresAuth: false
     };
   }
 }

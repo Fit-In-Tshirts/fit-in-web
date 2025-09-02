@@ -30,5 +30,6 @@ export const API_ENDPOINTS = {
   PRODUCT: {
     GET_ALL: '/product/getall',
     DELETE: '/product/delete',
+    GET_FILTER_DATA: '/product/get_filter_data'
   }
 }

@@ -210,3 +210,11 @@ export interface Size {
   description:string,
   sortOrder: number,
 }
+
+export interface ProductFilter {
+  name:string,
+  slug:string,
+  category:string,
+  design:string,
+  material:string,
+}
