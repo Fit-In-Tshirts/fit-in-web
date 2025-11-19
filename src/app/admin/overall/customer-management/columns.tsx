@@ -48,34 +48,32 @@ export const getCustomerColumns = ({
     accessorKey: "addresses.0.province",
     id: "province",
     header: "Province",
-    cell: ({ row }) => row.original.addresses[0].province,
+    cell: ({ row }) => row.original.addresses[0].province ? row.original.addresses[0].province: "-",
   },
   {
     accessorKey: "addresses.0.city",
     id: "city",
     header: "City",
-    cell: ({ row }) => row.original.addresses[0].city,
+    cell: ({ row }) => row.original.addresses[0].city ? row.original.addresses[0].city : "-",
   },
   {
     accessorKey: "addresses.0.zipcode",
     id: "zipcode",
     header: "Zip Code",
-    cell: ({ row }) => row.original.addresses[0].zipcode,
+    cell: ({ row }) => row.original.addresses[0].zipcode ? row.original.addresses[0].zipcode : "-",
   },
   {
     accessorKey: "phoneNumbers.0.phoneNumber_mobile",
     id: "phoneNumber_mobile",
     header: "Contact(Mobile)",
-    cell: ({ row }) => row.original.phoneNumbers[0].phoneNumber,
+    cell: ({ row }) => row.original.phoneNumbers[0] ? row.original.phoneNumbers[0].phoneNumber : "-" ,
   },
   {
     accessorKey: "phoneNumbers.1.phoneNumber_home",
     id: "phoneNumber_home",
     header: "Contact(Home)",
     cell: ({ row }) =>
-      row.original.phoneNumbers[1]
-        ? row.original.phoneNumbers[1].phoneNumber
-        : "-",
+      row.original.phoneNumbers[1] ? row.original.phoneNumbers[1].phoneNumber : "-",
   },
   {
     accessorKey: "id",
